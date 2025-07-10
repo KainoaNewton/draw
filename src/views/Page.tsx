@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
 import { NonDeletedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw } from "lucide-react";
 import { getDrawData, setDrawData } from "@/db/draw";
 import { drawDataStore } from "@/stores/drawDataStore";
@@ -28,6 +28,7 @@ export default function Page({ id }: PageProps) {
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const { theme } = useTheme();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["page", id],
@@ -41,6 +42,10 @@ export default function Page({ id }: PageProps) {
     }) => setDrawData(id, data.elements, data.name),
     onSuccess: () => {
       setIsSaving(false);
+      // Invalidate the pages cache to update the sidebar
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      // Also invalidate the current page cache to ensure consistency
+      queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
     onError: (error: Error) => {
       setIsSaving(false);

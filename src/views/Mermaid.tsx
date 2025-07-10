@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { ExternalLink } from "lucide-react";
 import { createNewPage } from "@/db/draw";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Mermaid() {
   const [mermaidSyntax, setMermaidSyntax] = useState("");
@@ -25,6 +26,7 @@ export default function Mermaid() {
 
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   async function generateExcalidraw() {
     if (mermaidSyntax.length > 0) {
@@ -61,6 +63,8 @@ export default function Mermaid() {
     const data = await createNewPage(elements);
 
     if (data.data && data.data[0]?.page_id) {
+      // Invalidate pages cache to update sidebar immediately
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
       goToPage(data.data[0].page_id);
       toast("Successfully created a new page!");
     }

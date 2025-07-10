@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { createNewPage, deletePage, getPages } from "../db/draw";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createNewPage, deletePage } from "../db/draw";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import Loader from "@/components/Loader";
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Trash2 } from "lucide-react";
 import TitleBar from "@/components/TitleBar";
-import { getLocalUser } from "@/db/auth";
+import { usePages } from "@/hooks/usePages";
 
 function NewPageOptionDropdown({
   createPageFn,
@@ -43,31 +43,8 @@ function NewPageOptionDropdown({
 
 export default function Pages() {
   const navigate = useNavigate();
-
-  const {
-    data,
-    isLoading,
-    refetch: refetchPages,
-  } = useQuery({
-    queryKey: ["pages"],
-    queryFn: async () => {
-      const user_session = await getLocalUser();
-      if (!user_session.error) {
-        if (!user_session.data.session) {
-          toast.error("Something went wrong!");
-          return { data: null, error: null };
-        }
-        return getPages(user_session?.data.session.user?.id ?? "");
-      }
-      return null;
-    },
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-  });
-
-  if (data?.error) {
-    toast(data.error.message);
-  }
+  const { pages, isLoading, refetchPages } = usePages();
+  const queryClient = useQueryClient();
 
   if (isLoading) return <Loader />;
 
@@ -79,6 +56,8 @@ export default function Pages() {
     const data = await createNewPage();
 
     if (data.data && data.data[0]?.page_id) {
+      // Invalidate pages cache to update sidebar immediately
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
       goToPage(data.data[0].page_id);
       toast("Successfully created a new page!");
     }
@@ -99,6 +78,8 @@ export default function Pages() {
 
     if (data.data === null) {
       toast("Successfully deleted the page!");
+      // Invalidate pages cache to update sidebar immediately
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
       refetchPages();
     }
     if (data.error) {
@@ -120,8 +101,8 @@ export default function Pages() {
         }
       />
       <div className="flex flex-wrap gap-3 py-1">
-        {data?.data && data.data.length > 0 ? (
-          data?.data?.map((page) => (
+        {pages && pages.length > 0 ? (
+          pages?.map((page) => (
             <Card
               key={page.page_id}
               className="group h-fit max-h-28 w-fit max-w-72 cursor-pointer p-1 px-2 pt-2"
