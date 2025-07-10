@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Virgil";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(./assets/fonts/Virgil.woff2) format("woff2");
+  }
+  html {
+    font-family: "Quicksand", sans-serif;
+  }
+  :root {
+    --radius: 0.5rem;
+  }
+}
