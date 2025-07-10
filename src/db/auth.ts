@@ -48,3 +48,13 @@ export async function updateUser(name: string, email: string) {
   });
   return { data, error };
 }
+
+export async function signInWithGoogle() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/pages`,
+    },
+  });
+  return { data, error };
+}

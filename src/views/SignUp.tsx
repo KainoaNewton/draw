@@ -17,6 +17,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { HiddenInput, Input } from "@/components/ui/input";
+import { GoogleSignInButton } from "@/components/ui/google-sign-in-button";
 import { signUpSchema } from "@/lib/schemas";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -133,6 +134,28 @@ export default function SignUp() {
               >
                 Sign Up
               </Button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Or
+                  </span>
+                </div>
+              </div>
+
+              <GoogleSignInButton
+                className="w-full"
+                onSuccess={() => {
+                  toast("Signing in with Google...");
+                }}
+                onError={(error) => {
+                  console.error("Google sign-in error:", error);
+                }}
+              />
+
               <div className="flex space-x-2">
                 <h1>Already have an account?</h1>
                 <Link className="font-bold underline" to="/login">

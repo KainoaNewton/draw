@@ -61,6 +61,15 @@ export default function HomePage() {
                 Macintushar
               </a>
             </h1>
+            <h1 className="text-lg text-white">
+              Tweaked by{" "}
+              <a
+                href="https://github.com/KainoaNewton"
+                className="font-semibold underline"
+              >
+                Kainoa Newton
+              </a>
+            </h1>
           </div>
         </div>
       </footer>
