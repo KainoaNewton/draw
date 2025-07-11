@@ -25,7 +25,8 @@ import { logout } from "@/db/auth";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
+import { useProfileOverlay } from "@/contexts/ProfileOverlayContext";
 import { useQuery } from "@tanstack/react-query";
 import { GITHUB_REPO_URL } from "@/constants";
 
@@ -34,6 +35,7 @@ export default function ProfileDropdown() {
 
   const { setTheme } = useTheme();
   const navigate = useNavigate();
+  const { openProfile } = useProfileOverlay();
 
   const { data: profileData, isLoading: profileIsLoading } = useQuery({
     queryKey: ["profile"],
@@ -65,11 +67,15 @@ export default function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant={"outline"} className="rounded-full">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-8 w-8 p-0"
+        >
           {profileIsLoading ? (
-            <div className="h-full w-full animate-pulse rounded-full bg-gray-900" />
+            <div className="h-4 w-4 animate-pulse rounded-full bg-background-hover" />
           ) : (
-            <User className="h-5 w-5" />
+            <User className="h-4 w-4" />
           )}
         </Button>
       </DropdownMenuTrigger>
@@ -77,9 +83,9 @@ export default function ProfileDropdown() {
         <DropdownMenuLabel>{message}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link to="/profile">
+          <div onClick={openProfile}>
             <ProfileItem Icon={User} text="Profile" />
-          </Link>
+          </div>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

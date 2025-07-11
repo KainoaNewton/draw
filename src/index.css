@@ -11,9 +11,135 @@
     src: url(./assets/fonts/Virgil.woff2) format("woff2");
   }
   html {
-    font-family: "Quicksand", sans-serif;
+    font-family: "Inter", "Helvetica", "Arial", sans-serif;
   }
   :root {
-    --radius: 0.5rem;
+    --radius: 0.5rem; /* 8px */
+
+    /* Actual Lazy.so Colors (from screenshots) */
+    /* Primary Colors */
+    --primary: #0a0a0a; /* Very dark background */
+    --secondary-slate: #1a1a1a; /* Slightly lighter dark */
+    --medium-gray: #2a2a2a; /* Medium dark gray */
+
+    /* Accent Colors */
+    --accent-blue: #3b82f6; /* Clean blue */
+    --accent-yellow: #fbbf24; /* Subtle yellow */
+
+    /* Background Colors */
+    --background-main: #0a0a0a; /* Very dark main background */
+    --background-card: #1a1a1a; /* Dark card background */
+    --background-input: #1a1a1a; /* Dark input background */
+    --background-hover: #2a2a2a; /* Hover state */
+
+    /* Text Colors */
+    --text-primary: #ffffff; /* Pure white primary text */
+    --text-secondary: #a1a1aa; /* Muted secondary text */
+    --text-muted: #71717a; /* Very muted text */
+
+    /* Border/Divider */
+    --border-subtle: #2a2a2a; /* Very subtle borders */
+    --border-input: #3a3a3a; /* Input borders */
+
+    /* Component specific */
+    --button-radius: 6px;
+    --input-radius: 6px;
+    --card-radius: 8px;
+    --modal-radius: 12px;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --button-shadow: none;
+
+    /* Spacing */
+    --section-margin: 24px;
+    --component-margin: 12px;
+    --element-padding: 8px;
+    --element-padding-lg: 16px;
+  }
+}
+
+/* Custom styles for Excalidraw toolbar positioning */
+@layer components {
+  /* Make sure the custom button is properly positioned relative to Excalidraw container */
+  .excalidraw-container {
+    position: relative;
+  }
+
+  /* Ensure our custom button doesn't interfere with Excalidraw's pointer events */
+  .custom-excalidraw-button {
+    pointer-events: auto;
+    z-index: 1000;
+  }
+
+  /* Shift ONLY the hamburger menu to the right to make room for our custom button */
+  .excalidraw .Island button:first-child {
+    margin-left: 48px !important; /* Shift hamburger menu right by 48px */
+  }
+
+  /* Alternative selectors for different Excalidraw versions */
+  .excalidraw [data-testid="main-menu-trigger"] {
+    margin-left: 48px !important;
+  }
+
+  /* Target the main menu button more specifically */
+  .excalidraw .App-menu_top .buttonList button:first-child {
+    margin-left: 48px !important;
+  }
+
+  /* Clean, minimal component styles matching Lazy.so */
+  .sidebar-nav-item {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    transition: all 200ms ease-in-out;
+    padding: 8px 12px;
+  }
+
+  .sidebar-nav-item:hover {
+    background-color: var(--background-hover);
+    color: var(--text-primary);
+  }
+
+  .sidebar-nav-item.active {
+    background-color: var(--background-hover);
+    color: var(--text-primary);
+  }
+
+  /* Sidebar section headers */
+  .sidebar-section-header {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  /* Keyboard shortcut styling */
+  .kbd {
+    background-color: var(--background-hover);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-family: monospace;
+    color: var(--text-muted);
+  }
+
+  /* Sidebar overflow prevention */
+  .sidebar-container {
+    overflow-x: hidden;
+    min-width: 0;
+  }
+
+  .sidebar-item-content {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .sidebar-text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
   }
 }

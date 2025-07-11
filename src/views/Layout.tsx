@@ -1,15 +1,34 @@
-import Navbar from "./Navbar";
-import { Outlet } from "@tanstack/react-router";
+import Sidebar from "@/components/Sidebar";
+import { Outlet, useLocation } from "@tanstack/react-router";
+import { FolderProvider } from "@/contexts/FolderContext";
+import { ProfileOverlayProvider } from "@/contexts/ProfileOverlayContext";
+import ProfileOverlay from "@/components/ProfileOverlay";
 
 export default function Layout() {
+  const location = useLocation();
+
+  // Hide sidebar only on mermaid route for full-screen experience
+  const shouldHideSidebar = location.pathname === "/mermaid";
+
   return (
-    <div className="flex h-full w-full flex-col p-1">
-      <Navbar />
-      <div className="h-full w-full p-3 pt-1">
-        <div className="flex h-full flex-row justify-center gap-8 overflow-clip rounded-xl border-2 border-black bg-gray-200/60 dark:border-white dark:bg-gray-900">
-          <Outlet />
+    <ProfileOverlayProvider>
+      <FolderProvider>
+        <div className="flex h-full w-full flex-col">
+          <div className="flex h-full w-full flex-row">
+            {!shouldHideSidebar && (
+              <div className="w-72 flex-shrink-0">
+                <Sidebar />
+              </div>
+            )}
+            <div className={`flex-1 flex justify-center ${shouldHideSidebar ? 'w-full' : ''}`}>
+              <div className="flex h-full w-full flex-row justify-center overflow-clip bg-background-main">
+                <Outlet />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+        <ProfileOverlay />
+      </FolderProvider>
+    </ProfileOverlayProvider>
   );
 }

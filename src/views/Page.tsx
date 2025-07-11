@@ -13,8 +13,8 @@ import { toast } from "sonner";
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
 import { NonDeletedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { RefreshCcw } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { RefreshCcw, Star } from "lucide-react";
 import { getDrawData, setDrawData } from "@/db/draw";
 import { drawDataStore } from "@/stores/drawDataStore";
 
@@ -27,7 +27,9 @@ export default function Page({ id }: PageProps) {
     useState<ExcalidrawImperativeAPI | null>(null);
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [customButtonPosition, setCustomButtonPosition] = useState({ left: '60px', top: '16px' });
   const { theme } = useTheme();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["page", id],
@@ -41,6 +43,10 @@ export default function Page({ id }: PageProps) {
     }) => setDrawData(id, data.elements, data.name),
     onSuccess: () => {
       setIsSaving(false);
+      // Invalidate the pages cache to update the sidebar
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      // Also invalidate the current page cache to ensure consistency
+      queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
     onError: (error: Error) => {
       setIsSaving(false);
@@ -121,57 +127,158 @@ export default function Page({ id }: PageProps) {
     }
   }, [id, excalidrawAPI, theme]);
 
+  useEffect(() => {
+    // Set a fixed position for our custom button since we're shifting the hamburger menu with CSS
+    const adjustButtonPosition = () => {
+      // Since we're shifting the hamburger menu 48px to the right with CSS,
+      // we can position our button at a fixed location that will be to its left
+      setCustomButtonPosition({
+        left: '16px', // Fixed position at left edge
+        top: '16px'
+      });
+    };
+
+    // Set position after Excalidraw loads
+    const timer = setTimeout(adjustButtonPosition, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [excalidrawAPI]);
+
   return (
     <div className="flex w-full flex-col">
-      <div className="h-full w-full">
+      <div className="h-full w-full excalidraw-container">
         {isLoading ? (
           <Loader />
         ) : (
-          <Excalidraw
-            excalidrawAPI={(api) => setExcalidrawAPI(api)}
-            initialData={{ appState: { theme: theme } }}
-            renderTopRightUI={() => (
-              <div className="flex gap-2">
-                <Input
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                  className="h-9 w-40"
-                  placeholder="Page Title"
-                />
-                <Button
-                  variant="secondary"
-                  onClick={setSceneData}
-                  disabled={isSaving}
-                  size="sm"
-                >
-                  {isSaving ? "Saving..." : "Save"}
-                </Button>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={updateScene}
-                      >
-                        <RefreshCcw className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>
-                        Refreshes the page. This removes any unsaved changes.
-                        Use with caution.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            )}
-            theme={theme === "dark" ? "dark" : "light"}
-            autoFocus
-          >
-            <WelcomeScreen />
-          </Excalidraw>
+          <>
+            {/* Custom button positioned absolutely within the Excalidraw container */}
+            <div
+              className="custom-excalidraw-button absolute"
+              style={{
+                position: 'absolute',
+                left: customButtonPosition.left,
+                top: customButtonPosition.top,
+                zIndex: 1000
+              }}
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        // Placeholder functionality - replace with your custom action
+                        console.log("Custom button clicked!");
+                        toast("Custom button clicked! Add your functionality here.");
+                      }}
+                      className="h-9 w-9 p-0 border-0 shadow-sm transition-colors rounded-lg"
+                      style={{
+                        height: '36px',
+                        width: '36px',
+                        backgroundColor: '#23232A',
+                        borderRadius: '8px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#363541';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#23232A';
+                      }}
+                    >
+                      <Star className="h-4 w-4" style={{ color: '#E3E3E8' }} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Custom Button - Add your functionality here</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            <div className="excalidraw h-full w-full">
+              <Excalidraw
+                excalidrawAPI={(api) => setExcalidrawAPI(api)}
+                initialData={{ appState: { theme: theme } }}
+                renderTopRightUI={() => (
+                  <div className="flex gap-2">
+                    <Input
+                      onChange={(e) => setName(e.target.value)}
+                      value={name}
+                      className="h-9 w-40 border shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      style={{
+                        backgroundColor: '#23232A',
+                        borderRadius: '8px',
+                        color: '#E3E3E8',
+                        borderColor: '#404040',
+                        borderWidth: '1px'
+                      }}
+                      placeholder="Page Title"
+                    />
+                    <Button
+                      variant="ghost"
+                      onClick={setSceneData}
+                      disabled={isSaving}
+                      size="sm"
+                      className="border-0 shadow-sm transition-colors rounded-lg px-4"
+                      style={{
+                        backgroundColor: '#23232A',
+                        borderRadius: '8px',
+                        color: '#E3E3E8',
+                        height: '36px'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSaving) {
+                          e.currentTarget.style.backgroundColor = '#363541';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#23232A';
+                      }}
+                    >
+                      {isSaving ? "Saving..." : "Save"}
+                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={updateScene}
+                            className="border-0 shadow-sm transition-colors rounded-lg h-9 w-9 p-0"
+                            style={{
+                              backgroundColor: '#23232A',
+                              borderRadius: '8px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = '#363541';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = '#23232A';
+                            }}
+                          >
+                            <RefreshCcw className="h-4 w-4" style={{ color: '#E3E3E8' }} />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Refreshes the page. This removes any unsaved changes.
+                            Use with caution.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                )}
+                theme={theme === "dark" ? "dark" : "light"}
+                autoFocus
+              >
+                <WelcomeScreen />
+              </Excalidraw>
+            </div>
+          </>
         )}
       </div>
     </div>
