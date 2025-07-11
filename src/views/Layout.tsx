@@ -1,5 +1,5 @@
 import Sidebar from "@/components/Sidebar";
-import { Outlet, useLocation } from "@tanstack/react-router";
+import { Outlet } from "@tanstack/react-router";
 import { FolderProvider } from "@/contexts/FolderContext";
 import { ProfileOverlayProvider } from "@/contexts/ProfileOverlayContext";
 import ProfileOverlay from "@/components/ProfileOverlay";
