@@ -65,11 +65,15 @@ export default function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant={"outline"} className="rounded-full">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-8 w-8 p-0"
+        >
           {profileIsLoading ? (
-            <div className="h-full w-full animate-pulse rounded-full bg-gray-900" />
+            <div className="h-4 w-4 animate-pulse rounded-full bg-background-hover" />
           ) : (
-            <User className="h-5 w-5" />
+            <User className="h-4 w-4" />
           )}
         </Button>
       </DropdownMenuTrigger>

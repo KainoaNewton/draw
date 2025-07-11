@@ -19,13 +19,13 @@ export default function HomePage() {
     }
   }
   return (
-    <main className="flex h-full w-full flex-col bg-gradient-to-r from-gray-900 via-gray-950 to-gray-900 p-2 font-virgil">
+    <main className="flex h-full w-full flex-col bg-background-main p-4 font-sans">
       <footer>
-        <div className="flex h-16 w-full items-center justify-center">
+        <div className="flex h-12 w-full items-center justify-center">
           <div className="flex flex-row items-center justify-center align-middle">
-            <h1 className="text-2xl text-white">
+            <h1 className="text-sm text-text-secondary">
               ⭐ Star us on{" "}
-              <a href={GITHUB_REPO_URL} className="font-semibold underline">
+              <a href={GITHUB_REPO_URL} className="font-medium underline text-accent-blue hover:text-blue-400 transition-colors">
                 GitHub
               </a>
             </h1>
@@ -33,16 +33,17 @@ export default function HomePage() {
         </div>
       </footer>
       <div className="flex h-full w-full items-center justify-center">
-        <div className="flex h-fit w-full flex-col items-center gap-y-8 sm:w-1/2">
-          <h1 className="text-6xl font-black">Draw</h1>
-          <h1 className="text-center text-5xl font-medium">
+        <div className="flex h-fit w-full flex-col items-center gap-y-6 sm:w-1/2 px-8">
+          <h1 className="text-5xl font-bold text-text-primary font-virgil">Draw</h1>
+          <h2 className="text-center text-2xl font-normal text-text-secondary leading-relaxed">
             The digital drawing tool that enables you to create, edit, and share
             your drawings across all your devices.
-          </h1>
+          </h2>
           <Button
             isLoading={isLoading}
             loadingText=""
-            className="w-2/3 text-lg font-semibold"
+            className="px-8 text-sm font-medium"
+            size="lg"
             onClick={() => action(data ? true : false)}
           >
             {data ? "View your pages" : "Sign In"}
@@ -50,26 +51,27 @@ export default function HomePage() {
         </div>
       </div>
       <footer>
-        <div className="flex h-16 w-full items-center justify-center">
-          <div className="flex flex-row items-center justify-center align-middle">
-            <h1 className="text-lg text-white">
-              Made by{" "}
+        <div className="flex h-12 w-full items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center sm:flex-row sm:gap-x-2">
+            <p className="text-sm text-text-secondary">
+              Forked from{" "}
               <a
-                href="https://github.com/macintushar"
-                className="font-semibold underline"
+                href="https://github.com/macintushar/draw"
+                className="font-medium text-accent-blue hover:text-blue-400 transition-colors underline"
               >
                 Macintushar
               </a>
-            </h1>
-            <h1 className="text-lg text-white">
-              Tweaked by{" "}
+              ,
+            </p>
+            <p className="text-sm text-text-secondary">
+              tweaked by{" "}
               <a
                 href="https://github.com/KainoaNewton"
-                className="font-semibold underline"
+                className="font-medium text-accent-blue hover:text-blue-400 transition-colors underline"
               >
                 Kainoa Newton
               </a>
-            </h1>
+            </p>
           </div>
         </div>
       </footer>

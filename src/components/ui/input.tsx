@@ -13,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-300",
+          "flex h-9 w-full rounded-input border border-border-input bg-background-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent-blue focus-visible:border-accent-blue disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out",
           className,
         )}
         ref={ref}
@@ -36,7 +36,7 @@ const HiddenInput = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={showPassword ? "text" : "password"}
           className={cn(
-            "flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-300",
+            "flex h-9 w-full rounded-input border border-border-input bg-background-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent-blue focus-visible:border-accent-blue disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out",
             "pr-10",
             className,
           )}
@@ -46,7 +46,7 @@ const HiddenInput = React.forwardRef<HTMLInputElement, InputProps>(
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none dark:text-gray-400 dark:hover:text-gray-200"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary focus:outline-none transition-colors duration-150 ease-in-out"
         >
           {showPassword ? (
             <EyeOff className="h-4 w-4" />

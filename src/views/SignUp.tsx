@@ -58,12 +58,12 @@ export default function SignUp() {
   }
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <Card className="w-full max-w-md">
+    <div className="flex h-full items-center justify-center bg-background-main p-6">
+      <Card className="w-full max-w-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Sign Up</CardTitle>
+              <CardTitle>Sign Up</CardTitle>
               <CardDescription>
                 Enter your information to create an account.
               </CardDescription>
@@ -137,10 +137,10 @@ export default function SignUp() {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full border-t border-border-subtle" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                  <span className="bg-background-card px-2 text-text-muted">
                     Or
                   </span>
                 </div>
@@ -156,9 +156,9 @@ export default function SignUp() {
                 }}
               />
 
-              <div className="flex space-x-2">
-                <h1>Already have an account?</h1>
-                <Link className="font-bold underline" to="/login">
+              <div className="flex space-x-2 text-sm">
+                <span className="text-text-secondary">Already have an account?</span>
+                <Link className="font-medium underline text-accent-blue hover:text-blue-400 transition-colors" to="/login">
                   Login
                 </Link>
               </div>

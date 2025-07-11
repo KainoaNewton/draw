@@ -10,6 +10,7 @@ export interface PageData {
   user_id: string;
   is_deleted: boolean;
   page_elements?: any;
+  folder_id?: string;
 }
 
 export function usePages() {

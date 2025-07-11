@@ -55,12 +55,12 @@ export default function Login() {
   }
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <Card className="w-full max-w-md">
+    <div className="flex h-full items-center justify-center bg-background-main p-6">
+      <Card className="w-full max-w-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Login</CardTitle>
+              <CardTitle>Login</CardTitle>
               <CardDescription>
                 Enter your email below to login to your account.
               </CardDescription>
@@ -115,10 +115,10 @@ export default function Login() {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full border-t border-border-subtle" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                <div className="relative flex justify-center text-ui uppercase">
+                  <span className="bg-background-card px-2 text-text-muted">
                     Or
                   </span>
                 </div>
@@ -134,9 +134,9 @@ export default function Login() {
                 }}
               />
 
-              <div className="flex space-x-2">
-                <h1>Don't have an account?</h1>
-                <Link className="font-bold underline" to="/signup">
+              <div className="flex space-x-2 text-body">
+                <span className="text-text-secondary">Don't have an account?</span>
+                <Link className="font-bold underline text-accent-blue hover:text-[#3a7bc8] transition-colors" to="/signup">
                   Sign up
                 </Link>
               </div>

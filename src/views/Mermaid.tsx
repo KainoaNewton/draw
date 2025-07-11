@@ -89,7 +89,7 @@ export default function Mermaid() {
   }, [excalidrawAPI]);
 
   return (
-    <div className="flex h-full w-full flex-col p-3">
+    <div className="flex h-full w-full flex-col p-3" style={{ backgroundColor: '#23232A' }}>
       <TitleBar
         title="MERMAID"
         ctaLabel="Save As New Page"
@@ -100,9 +100,9 @@ export default function Mermaid() {
           <Tooltip>
             <TooltipTrigger>
               <a href="https://mermaid.js.org/" target="_blank">
-                <div className="flex flex-row items-center gap-2 p-1 text-sm">
+                <div className="flex flex-row items-center gap-2 p-1 text-sm" style={{ color: '#E3E3E8' }}>
                   Learn more
-                  <ExternalLink className="mr-1 h-4 w-4" />
+                  <ExternalLink className="mr-1 h-4 w-4" style={{ color: '#E3E3E8' }} />
                 </div>
               </a>
             </TooltipTrigger>
@@ -113,10 +113,24 @@ export default function Mermaid() {
         }
       />
       <div className="flex h-full w-full flex-row gap-3">
-        <div className="flex h-full w-full flex-col gap-1 rounded-xl border-2 border-white p-1 sm:w-1/3">
+        <div
+          className="flex h-full w-full flex-col gap-1 p-3 sm:w-1/3"
+          style={{
+            backgroundColor: '#23232A',
+            borderColor: '#404040',
+            borderWidth: '1px',
+            borderRadius: '8px'
+          }}
+        >
           <Textarea
             onChange={(e) => setMermaidSyntax(e.target.value)}
-            className="h-full resize-none"
+            className="h-full"
+            placeholder="Enter your Mermaid diagram syntax here..."
+            style={{
+              backgroundColor: '#23232A',
+              borderColor: '#404040',
+              color: '#E3E3E8'
+            }}
           />
           <Button
             size="lg"
@@ -129,7 +143,15 @@ export default function Mermaid() {
             Convert to Excalidraw
           </Button>
         </div>
-        <div className="h-full w-full rounded-xl border-2 border-white sm:w-2/3">
+        <div
+          className="h-full w-full sm:w-2/3"
+          style={{
+            backgroundColor: '#23232A',
+            borderColor: '#404040',
+            borderWidth: '1px',
+            borderRadius: '8px'
+          }}
+        >
           <Excalidraw
             excalidrawAPI={(api) => setExcalidrawAPI(api)}
             theme={theme === "dark" ? "dark" : "light"}
