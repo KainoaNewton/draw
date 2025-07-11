@@ -30,6 +30,7 @@ export function FolderProvider({ children }: { children: React.ReactNode }) {
           queryClient.invalidateQueries({ queryKey: ["folders"] });
         } catch (error) {
           console.error("Failed to create default folder:", error);
+          // Optionally, import and use a toast notification here if needed
         }
       }
     }
