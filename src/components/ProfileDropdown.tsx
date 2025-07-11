@@ -58,11 +58,8 @@ export default function ProfileDropdown() {
     navigate({ to: "/" });
   }
 
-  const message =
-    timeMessage() +
-    ", " +
-    profileData?.data.session?.user.user_metadata.name +
-    "!";
+  const userName = profileData?.data.session?.user.user_metadata?.name || "User";
+  const message = `${timeMessage()}, ${userName}!`;
 
   return (
     <DropdownMenu>

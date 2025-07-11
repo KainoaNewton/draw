@@ -25,9 +25,11 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   private handleReset = () => {
+    // Instead of reloading the page, reset the error state
     this.setState({ hasError: false, error: undefined });
-    // Reload the page to reset the application state
-    window.location.reload();
+    // Optionally, you can navigate to a safe route or reset global state here
+    // For example, if using react-router: this.props.navigate('/');
+    // If you want to force a reload, consider persisting state first
   };
 
   public render() {

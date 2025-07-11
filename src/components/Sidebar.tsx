@@ -549,7 +549,13 @@ export default function Sidebar({ className }: SidebarProps) {
 
       // If the deleted folder was selected, select the first available folder
       if (selectedFolderId === folderId) {
-        setSelectedFolderId(null);
+        // Select the first available folder, or null if none left
+        const remainingFolders = folders?.filter(f => f.folder_id !== folderId) || [];
+        if (remainingFolders.length > 0) {
+          setSelectedFolderId(remainingFolders[0].folder_id);
+        } else {
+          setSelectedFolderId(null);
+        }
       }
 
       toast("Successfully deleted folder!");
@@ -612,7 +618,7 @@ export default function Sidebar({ className }: SidebarProps) {
         ) : isOnIndividualPage && currentFolder ? (
           /* Folder Pages Section for Individual Page View - Show pages in current folder */
           <FolderPagesSection
-            folderName={currentFolder.name}
+            folderName={currentFolder?.name ?? "Unknown Folder"}
             onCreatePage={handleCreatePageInFolder}
             onBackToDashboard={handleBackToDashboard}
           >
