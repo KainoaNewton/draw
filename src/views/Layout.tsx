@@ -7,8 +7,8 @@ import ProfileOverlay from "@/components/ProfileOverlay";
 export default function Layout() {
   const location = useLocation();
 
-  // Hide sidebar only on mermaid route for full-screen experience
-  const shouldHideSidebar = location.pathname === "/mermaid";
+  // Remove special handling for mermaid route
+  const shouldHideSidebar = false;
 
   return (
     <ProfileOverlayProvider>

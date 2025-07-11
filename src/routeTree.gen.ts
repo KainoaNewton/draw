@@ -19,9 +19,6 @@ const LoginLazyRouteImport = createFileRoute('/login')()
 const AuthenticatedPagesLazyRouteImport = createFileRoute(
   '/_authenticated/pages',
 )()
-const AuthenticatedMermaidLazyRouteImport = createFileRoute(
-  '/_authenticated/mermaid',
-)()
 const AuthenticatedPageIdLazyRouteImport = createFileRoute(
   '/_authenticated/page/$id',
 )()
@@ -52,14 +49,6 @@ const AuthenticatedPagesLazyRoute = AuthenticatedPagesLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_authenticated/pages.lazy').then((d) => d.Route),
 )
-const AuthenticatedMermaidLazyRoute =
-  AuthenticatedMermaidLazyRouteImport.update({
-    id: '/mermaid',
-    path: '/mermaid',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any).lazy(() =>
-    import('./routes/_authenticated/mermaid.lazy').then((d) => d.Route),
-  )
 const AuthenticatedPageIdLazyRoute = AuthenticatedPageIdLazyRouteImport.update({
   id: '/page/$id',
   path: '/page/$id',
@@ -72,7 +61,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginLazyRoute
   '/signup': typeof SignupLazyRoute
-  '/mermaid': typeof AuthenticatedMermaidLazyRoute
   '/pages': typeof AuthenticatedPagesLazyRoute
   '/page/$id': typeof AuthenticatedPageIdLazyRoute
 }
@@ -80,7 +68,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginLazyRoute
   '/signup': typeof SignupLazyRoute
-  '/mermaid': typeof AuthenticatedMermaidLazyRoute
   '/pages': typeof AuthenticatedPagesLazyRoute
   '/page/$id': typeof AuthenticatedPageIdLazyRoute
 }
@@ -90,22 +77,20 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginLazyRoute
   '/signup': typeof SignupLazyRoute
-  '/_authenticated/mermaid': typeof AuthenticatedMermaidLazyRoute
   '/_authenticated/pages': typeof AuthenticatedPagesLazyRoute
   '/_authenticated/page/$id': typeof AuthenticatedPageIdLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/mermaid' | '/pages' | '/page/$id'
+  fullPaths: '/' | '/login' | '/signup' | '/pages' | '/page/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/mermaid' | '/pages' | '/page/$id'
+  to: '/' | '/login' | '/signup' | '/pages' | '/page/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
     | '/signup'
-    | '/_authenticated/mermaid'
     | '/_authenticated/pages'
     | '/_authenticated/page/$id'
   fileRoutesById: FileRoutesById
@@ -154,13 +139,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPagesLazyRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/mermaid': {
-      id: '/_authenticated/mermaid'
-      path: '/mermaid'
-      fullPath: '/mermaid'
-      preLoaderRoute: typeof AuthenticatedMermaidLazyRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/page/$id': {
       id: '/_authenticated/page/$id'
       path: '/page/$id'
@@ -172,13 +150,11 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedMermaidLazyRoute: typeof AuthenticatedMermaidLazyRoute
   AuthenticatedPagesLazyRoute: typeof AuthenticatedPagesLazyRoute
   AuthenticatedPageIdLazyRoute: typeof AuthenticatedPageIdLazyRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedMermaidLazyRoute: AuthenticatedMermaidLazyRoute,
   AuthenticatedPagesLazyRoute: AuthenticatedPagesLazyRoute,
   AuthenticatedPageIdLazyRoute: AuthenticatedPageIdLazyRoute,
 }
