@@ -7,38 +7,20 @@ import NoData from "./NoData";
 import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Trash2 } from "lucide-react";
 import TitleBar from "@/components/TitleBar";
 import { useFolderPages } from "@/hooks/useFolders";
 import { useFolderContext } from "@/contexts/FolderContext";
+import { Trash2 } from "lucide-react";
 
 function NewPageOptionDropdown({
   createPageFn,
-  createMermaidPageFn,
 }: {
   createPageFn: () => void;
-  createMermaidPageFn: () => void;
 }) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="default" className="font-medium text-sm">
-          + New Page
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={createPageFn}>Plain Page</DropdownMenuItem>
-        <DropdownMenuItem onClick={createMermaidPageFn}>
-          Mermaid Syntax Diagram
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button variant="default" className="font-medium text-sm" onClick={createPageFn}>
+      + New Page
+    </Button>
   );
 }
 
@@ -76,10 +58,6 @@ export default function Pages() {
     }
   }
 
-  async function createMermaidPage() {
-    navigate({ to: "/mermaid" });
-  }
-
   async function handlePageDelete(id: string) {
     const data = await deletePage(id);
 
@@ -103,7 +81,6 @@ export default function Pages() {
         extra={
           <NewPageOptionDropdown
             createPageFn={createPage}
-            createMermaidPageFn={createMermaidPage}
           />
         }
       />

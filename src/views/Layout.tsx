@@ -1,14 +1,12 @@
 import Sidebar from "@/components/Sidebar";
-import { Outlet, useLocation } from "@tanstack/react-router";
+import { Outlet } from "@tanstack/react-router";
 import { FolderProvider } from "@/contexts/FolderContext";
 import { ProfileOverlayProvider } from "@/contexts/ProfileOverlayContext";
 import ProfileOverlay from "@/components/ProfileOverlay";
 
 export default function Layout() {
-  const location = useLocation();
-
-  // Hide sidebar only on mermaid route for full-screen experience
-  const shouldHideSidebar = location.pathname === "/mermaid";
+  // Remove special handling for mermaid route
+  const shouldHideSidebar = false;
 
   return (
     <ProfileOverlayProvider>
