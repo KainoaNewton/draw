@@ -70,18 +70,19 @@
     z-index: 1000;
   }
 
-  /* Shift ONLY the hamburger menu to the right to make room for our custom button */
-  .excalidraw .Island button:first-child {
+  /* Shift ONLY the hamburger menu to the right to make room for our custom button,
+     scoped to instances within .excalidraw-container where the custom button is present. */
+  .excalidraw-container .excalidraw .Island button:first-child {
     margin-left: 48px !important; /* Shift hamburger menu right by 48px */
   }
 
-  /* Alternative selectors for different Excalidraw versions */
-  .excalidraw [data-testid="main-menu-trigger"] {
+  /* Alternative selectors for different Excalidraw versions, scoped */
+  .excalidraw-container .excalidraw [data-testid="main-menu-trigger"] {
     margin-left: 48px !important;
   }
 
-  /* Target the main menu button more specifically */
-  .excalidraw .App-menu_top .buttonList button:first-child {
+  /* Target the main menu button more specifically, scoped */
+  .excalidraw-container .excalidraw .App-menu_top .buttonList button:first-child {
     margin-left: 48px !important;
   }
 
