@@ -7,16 +7,10 @@ import NoData from "./NoData";
 import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Trash2 } from "lucide-react";
 import TitleBar from "@/components/TitleBar";
 import { useFolderPages } from "@/hooks/useFolders";
 import { useFolderContext } from "@/contexts/FolderContext";
+import { Trash2 } from "lucide-react";
 
 function NewPageOptionDropdown({
   createPageFn,

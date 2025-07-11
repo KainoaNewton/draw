@@ -5,8 +5,6 @@ import { ProfileOverlayProvider } from "@/contexts/ProfileOverlayContext";
 import ProfileOverlay from "@/components/ProfileOverlay";
 
 export default function Layout() {
-  const location = useLocation();
-
   // Remove special handling for mermaid route
   const shouldHideSidebar = false;
 
