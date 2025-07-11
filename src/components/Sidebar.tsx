@@ -31,6 +31,7 @@ import { createNewPage, createFolder, renameFolder, deleteFolder } from "@/db/dr
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfileOverlay } from "@/contexts/ProfileOverlayContext";
 
 interface SidebarProps {
   className?: string;
@@ -45,7 +46,7 @@ interface SidebarItemProps {
 
 function UserProfileFooter() {
   const { user, loading } = useAuth();
-  const navigate = useNavigate();
+  const { openProfile } = useProfileOverlay();
 
   // Extract user information with proper fallbacks
   const userName = user?.user_metadata?.name || user?.user_metadata?.full_name || "User";
@@ -69,7 +70,7 @@ function UserProfileFooter() {
   return (
     <div className="mx-4 mb-4">
       <button
-        onClick={() => navigate({ to: "/profile" })}
+        onClick={openProfile}
         className="flex items-center gap-3 w-full px-3 py-2.5 text-sm rounded-md transition-all duration-200 ease-in-out cursor-pointer text-text-secondary hover:bg-background-hover hover:text-text-primary bg-background-card border border-border-subtle min-w-0"
       >
         <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-accent-blue to-purple-600 text-white">

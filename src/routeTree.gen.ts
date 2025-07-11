@@ -20,9 +20,6 @@ import { Route as IndexImport } from './routes/index'
 
 const SignupLazyImport = createFileRoute('/signup')()
 const LoginLazyImport = createFileRoute('/login')()
-const AuthenticatedProfileLazyImport = createFileRoute(
-  '/_authenticated/profile',
-)()
 const AuthenticatedPagesLazyImport = createFileRoute('/_authenticated/pages')()
 const AuthenticatedMermaidLazyImport = createFileRoute(
   '/_authenticated/mermaid',
@@ -55,14 +52,6 @@ const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
-
-const AuthenticatedProfileLazyRoute = AuthenticatedProfileLazyImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AuthenticatedRoute,
-} as any).lazy(() =>
-  import('./routes/_authenticated/profile.lazy').then((d) => d.Route),
-)
 
 const AuthenticatedPagesLazyRoute = AuthenticatedPagesLazyImport.update({
   id: '/pages',
@@ -134,13 +123,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPagesLazyImport
       parentRoute: typeof AuthenticatedImport
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileLazyImport
-      parentRoute: typeof AuthenticatedImport
-    }
     '/_authenticated/page/$id': {
       id: '/_authenticated/page/$id'
       path: '/page/$id'
@@ -156,14 +138,12 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedMermaidLazyRoute: typeof AuthenticatedMermaidLazyRoute
   AuthenticatedPagesLazyRoute: typeof AuthenticatedPagesLazyRoute
-  AuthenticatedProfileLazyRoute: typeof AuthenticatedProfileLazyRoute
   AuthenticatedPageIdLazyRoute: typeof AuthenticatedPageIdLazyRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedMermaidLazyRoute: AuthenticatedMermaidLazyRoute,
   AuthenticatedPagesLazyRoute: AuthenticatedPagesLazyRoute,
-  AuthenticatedProfileLazyRoute: AuthenticatedProfileLazyRoute,
   AuthenticatedPageIdLazyRoute: AuthenticatedPageIdLazyRoute,
 }
 
@@ -178,7 +158,6 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupLazyRoute
   '/mermaid': typeof AuthenticatedMermaidLazyRoute
   '/pages': typeof AuthenticatedPagesLazyRoute
-  '/profile': typeof AuthenticatedProfileLazyRoute
   '/page/$id': typeof AuthenticatedPageIdLazyRoute
 }
 
@@ -189,7 +168,6 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupLazyRoute
   '/mermaid': typeof AuthenticatedMermaidLazyRoute
   '/pages': typeof AuthenticatedPagesLazyRoute
-  '/profile': typeof AuthenticatedProfileLazyRoute
   '/page/$id': typeof AuthenticatedPageIdLazyRoute
 }
 
@@ -201,7 +179,6 @@ export interface FileRoutesById {
   '/signup': typeof SignupLazyRoute
   '/_authenticated/mermaid': typeof AuthenticatedMermaidLazyRoute
   '/_authenticated/pages': typeof AuthenticatedPagesLazyRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileLazyRoute
   '/_authenticated/page/$id': typeof AuthenticatedPageIdLazyRoute
 }
 
@@ -214,18 +191,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/mermaid'
     | '/pages'
-    | '/profile'
     | '/page/$id'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | ''
-    | '/login'
-    | '/signup'
-    | '/mermaid'
-    | '/pages'
-    | '/profile'
-    | '/page/$id'
+  to: '/' | '' | '/login' | '/signup' | '/mermaid' | '/pages' | '/page/$id'
   id:
     | '__root__'
     | '/'
@@ -234,7 +202,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/mermaid'
     | '/_authenticated/pages'
-    | '/_authenticated/profile'
     | '/_authenticated/page/$id'
   fileRoutesById: FileRoutesById
 }
@@ -277,7 +244,6 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/mermaid",
         "/_authenticated/pages",
-        "/_authenticated/profile",
         "/_authenticated/page/$id"
       ]
     },
@@ -293,10 +259,6 @@ export const routeTree = rootRoute
     },
     "/_authenticated/pages": {
       "filePath": "_authenticated/pages.lazy.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/profile": {
-      "filePath": "_authenticated/profile.lazy.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/page/$id": {
