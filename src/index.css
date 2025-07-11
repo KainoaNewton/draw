@@ -64,26 +64,7 @@
     position: relative;
   }
 
-  /* Ensure our custom button doesn't interfere with Excalidraw's pointer events */
-  .custom-excalidraw-button {
-    pointer-events: auto;
-    z-index: 1000;
-  }
-
-  /* Shift ONLY the hamburger menu to the right to make room for our custom button */
-  .excalidraw .Island button:first-child {
-    margin-left: 48px !important; /* Shift hamburger menu right by 48px */
-  }
-
-  /* Alternative selectors for different Excalidraw versions */
-  .excalidraw [data-testid="main-menu-trigger"] {
-    margin-left: 48px !important;
-  }
-
-  /* Target the main menu button more specifically */
-  .excalidraw .App-menu_top .buttonList button:first-child {
-    margin-left: 48px !important;
-  }
+  /* Removed custom-excalidraw-button and hamburger menu shifting styles */
 
   /* Clean, minimal component styles matching Lazy.so */
   .sidebar-nav-item {
