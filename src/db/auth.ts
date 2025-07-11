@@ -58,3 +58,35 @@ export async function signInWithGoogle() {
   });
   return { data, error };
 }
+
+export async function linkGoogleAccount() {
+  const { data, error } = await supabase.auth.linkIdentity({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/profile`,
+    },
+  });
+  return { data, error };
+}
+
+export async function unlinkGoogleAccount() {
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return { data: null, error: userError || new Error('No user found') };
+    }
+
+    // Find the Google identity to unlink
+    const googleIdentity = user.identities?.find(identity => identity.provider === 'google');
+
+    if (!googleIdentity) {
+      return { data: null, error: new Error('No Google identity found to disconnect') };
+    }
+
+    const { data, error } = await supabase.auth.unlinkIdentity(googleIdentity);
+    return { data, error };
+  } catch (err) {
+    return { data: null, error: err instanceof Error ? err : new Error('Failed to unlink Google account') };
+  }
+}

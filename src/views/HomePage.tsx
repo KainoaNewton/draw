@@ -3,13 +3,38 @@ import { GITHUB_REPO_URL } from "@/constants";
 import isAuthenticated from "@/hooks/isAuthenticated";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { data, isLoading } = useQuery({
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  const { data, isLoading, error } = useQuery({
     queryKey: ["user", "authenticated"],
     queryFn: () => isAuthenticated(),
+    retry: 3,
+    retryDelay: 1000,
+    staleTime: 30000, // 30 seconds
   });
+
+  // Set a timeout for loading state to prevent infinite loading
+  useEffect(() => {
+    if (isLoading) {
+      const timeout = setTimeout(() => {
+        setLoadingTimeout(true);
+        console.warn("Authentication check timed out after 10 seconds");
+      }, 10000); // 10 second timeout
+
+      return () => clearTimeout(timeout);
+    } else {
+      setLoadingTimeout(false);
+    }
+  }, [isLoading]);
+
+  // Log errors for debugging
+  if (error) {
+    console.error("Authentication query error:", error);
+  }
 
   function action(authenticated: boolean) {
     if (authenticated === true) {
@@ -40,13 +65,19 @@ export default function HomePage() {
             your drawings across all your devices.
           </h2>
           <Button
-            isLoading={isLoading}
+            isLoading={isLoading && !loadingTimeout}
             loadingText=""
             className="px-8 text-sm font-medium"
             size="lg"
             onClick={() => action(data ? true : false)}
+            disabled={loadingTimeout}
           >
-            {data ? "View your pages" : "Sign In"}
+            {loadingTimeout
+              ? "Connection timeout - Try again"
+              : data
+                ? "View your pages"
+                : "Sign In"
+            }
           </Button>
         </div>
       </div>

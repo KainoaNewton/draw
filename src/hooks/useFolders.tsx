@@ -3,7 +3,7 @@ import { getFolders, getPagesByFolder, Folder, getPages } from "@/db/draw";
 import { useAuth } from "./useAuth";
 
 export function useFolders() {
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
 
   const {
     data: folders,

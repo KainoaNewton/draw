@@ -1,12 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createNewPage, deletePage, renamePage } from "../db/draw";
+import { createNewPage, deletePage } from "../db/draw";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import Loader from "@/components/Loader";
 import NoData from "./NoData";
 import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,

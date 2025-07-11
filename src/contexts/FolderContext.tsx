@@ -15,7 +15,7 @@ const FolderContext = createContext<FolderContextType | undefined>(undefined);
 
 export function FolderProvider({ children }: { children: React.ReactNode }) {
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
-  const { folders, isLoading, error } = useFolders();
+  const { folders, isLoading } = useFolders();
   const { user } = useAuth();
   const queryClient = useQueryClient();
 

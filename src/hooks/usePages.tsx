@@ -17,7 +17,6 @@ export function usePages() {
   const {
     data,
     isLoading,
-    error,
     refetch: refetchPages,
   } = useQuery({
     queryKey: ["pages"],
