@@ -65,15 +65,7 @@ export function useAuth() {
         // Handle specific auth events
         switch (event) {
           case 'SIGNED_IN':
-            if (session?.user) {
-              // Check if this is an OAuth sign-in by looking at the provider
-              const provider = session.user.app_metadata?.provider;
-              if (provider === 'google') {
-                toast.success("Successfully signed in with Google!");
-              } else {
-                toast.success("Successfully signed in!");
-              }
-            }
+            // Removed automatic sign-in toasts as they are not needed
             break;
           case 'SIGNED_OUT':
             toast.info("Signed out successfully");

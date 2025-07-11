@@ -226,7 +226,8 @@ export default function Page({ id }: PageProps) {
                       style={{
                         backgroundColor: '#23232A',
                         borderRadius: '8px',
-                        color: '#E3E3E8'
+                        color: '#E3E3E8',
+                        height: '36px'
                       }}
                       onMouseEnter={(e) => {
                         if (!isSaving) {

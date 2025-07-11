@@ -11,12 +11,12 @@ import {
   FileText,
   Plus,
   Search,
-  LayoutDashboard,
   MoreHorizontal,
   User,
   Folder,
   Edit,
-  Trash2
+  Trash2,
+  ChevronLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,31 +41,7 @@ interface SidebarItemProps {
   isActive: boolean;
 }
 
-function UserProfileHeader() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
-  return (
-    <button
-      onClick={() => navigate({ to: "/profile" })}
-      className="flex items-center justify-between w-full px-4 py-3 border-b border-border-subtle hover:bg-background-hover transition-colors min-w-0"
-    >
-      <div className="flex items-center gap-3 min-w-0 flex-1">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-medium text-sm flex-shrink-0">
-          <User className="h-4 w-4" />
-        </div>
-        <div className="flex flex-col items-start min-w-0 flex-1">
-          <span className="text-sm font-medium text-text-primary truncate w-full">
-            {user?.user_metadata?.full_name || "User"}
-          </span>
-          <span className="text-xs text-text-muted truncate w-full">
-            {user?.email || "user@example.com"}
-          </span>
-        </div>
-      </div>
-    </button>
-  );
-}
 
 function UserProfileFooter() {
   const { user, loading } = useAuth();
@@ -140,28 +116,7 @@ function SearchButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function DashboardButton() {
-  const location = useLocation();
-  const isActive = location.pathname === "/pages";
 
-  return (
-    <div className="mx-4">
-      <Link to="/pages">
-        <div
-          className={cn(
-            "flex items-center gap-3 w-full px-3 py-2.5 text-sm rounded-md transition-all duration-200 ease-in-out cursor-pointer",
-            isActive
-              ? "bg-background-hover text-text-primary"
-              : "text-text-secondary hover:bg-background-hover hover:text-text-primary"
-          )}
-        >
-          <LayoutDashboard className="h-4 w-4 flex-shrink-0" />
-          <span className="font-medium truncate">Dashboard</span>
-        </div>
-      </Link>
-    </div>
-  );
-}
 
 function FoldersSection({
   children,
@@ -198,19 +153,25 @@ function FoldersSection({
 function FolderPagesSection({
   folderName,
   children,
-  onCreatePage
+  onCreatePage,
+  onBackToDashboard
 }: {
   folderName: string;
   children: React.ReactNode;
   onCreatePage: () => void;
+  onBackToDashboard: () => void;
 }) {
   return (
     <div className="mx-4">
       <div className="flex items-center justify-between px-3 py-2 mb-2 min-w-0">
-        <div className="flex items-center gap-2 min-w-0 flex-1">
+        <button
+          className="flex items-center gap-2 min-w-0 flex-1 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+          onClick={onBackToDashboard}
+        >
+          <ChevronLeft className="h-4 w-4 flex-shrink-0" />
           <Folder className="h-4 w-4 flex-shrink-0" />
-          <span className="font-medium text-sm text-text-primary truncate">{folderName}</span>
-        </div>
+          <span className="font-medium text-sm truncate">{folderName}</span>
+        </button>
         <div className="flex items-center gap-1 flex-shrink-0 ml-2">
           <Button
             size="sm"
@@ -285,71 +246,74 @@ function FolderItem({
     <button
       onClick={onSelect}
       className={cn(
-        "group relative flex items-start gap-3 px-3 py-3 text-sm rounded-lg transition-all duration-200 ease-in-out cursor-pointer w-full text-left min-w-0",
+        "group relative flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-all duration-200 ease-in-out cursor-pointer w-full text-left min-w-0",
         isSelected
           ? "bg-accent-blue/10 text-text-primary border border-accent-blue/20"
           : "text-text-secondary hover:bg-background-hover hover:text-text-primary"
       )}
     >
       {/* Folder Icon */}
-      <div className="w-10 h-8 rounded-md flex-shrink-0 flex items-center justify-center bg-yellow-500">
-        <Folder className="h-4 w-4 text-white" />
-      </div>
+      <Folder className="h-4 w-4 flex-shrink-0 text-yellow-500" />
 
-      {/* Content */}
+      {/* Folder Name */}
       <div className="flex-1 min-w-0">
-        <div className="truncate font-medium text-sm mb-1">
+        <span className="truncate font-medium text-sm">
           {folder.name}
-        </div>
-        <div className="text-xs text-text-muted truncate">
-          {pageCount} {pageCount === 1 ? 'drawing' : 'drawings'}
-        </div>
+        </span>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-6 w-6 p-0 flex-shrink-0"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <MoreHorizontal className="h-3 w-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                onCreateDrawing(folder.folder_id);
-              }}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              New Drawing
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsRenaming(true);
-              }}
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(folder.folder_id);
-              }}
-              className="text-red-600 focus:text-red-600"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      {/* Drawing Count / Actions Toggle */}
+      <div className="flex items-center justify-center w-6 h-6 flex-shrink-0 relative">
+        {/* Drawing Count - visible by default, hidden on hover */}
+        <span className="text-xs text-text-muted group-hover:opacity-0 transition-opacity absolute">
+          {pageCount}
+        </span>
+
+        {/* Actions - hidden by default, visible on hover */}
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 w-6 p-0 flex-shrink-0"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreHorizontal className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCreateDrawing(folder.folder_id);
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Drawing
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsRenaming(true);
+                }}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(folder.folder_id);
+                }}
+                className="text-red-600 focus:text-red-600"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </button>
   );
@@ -358,42 +322,59 @@ function FolderItem({
 
 
 function PageItem({ page, isActive }: SidebarItemProps) {
+  const { user } = useAuth();
+
   // Generate a random color for the thumbnail
   const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500', 'bg-yellow-500', 'bg-red-500'];
   const colorIndex = page.page_id.charCodeAt(0) % colors.length;
   const thumbnailColor = colors[colorIndex];
+
+  // Get user avatar info
+  const avatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const userName = user?.user_metadata?.name || user?.user_metadata?.full_name || "User";
 
   return (
     <Link
       to="/page/$id"
       params={{ id: page.page_id }}
       className={cn(
-        "group relative flex items-start gap-3 px-3 py-3 text-sm rounded-lg transition-all duration-200 ease-in-out cursor-pointer w-full min-w-0",
+        "group relative flex items-center gap-3 px-3 py-2.5 text-sm rounded-md transition-all duration-200 ease-in-out cursor-pointer w-full min-w-0",
         isActive
           ? "bg-accent-blue/10 text-text-primary border border-accent-blue/20"
           : "text-text-secondary hover:bg-background-hover hover:text-text-primary"
       )}
     >
       {/* Thumbnail */}
-      <div className={cn("w-10 h-8 rounded-md flex-shrink-0 flex items-center justify-center", thumbnailColor)}>
-        <FileText className="h-4 w-4 text-white" />
+      <div className={cn("w-7 h-7 rounded flex-shrink-0 flex items-center justify-center", thumbnailColor)}>
+        <FileText className="h-3.5 w-3.5 text-white" />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        <div className="truncate font-medium text-sm mb-1">
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="truncate font-medium text-sm leading-tight">
           {page.name || "Untitled"}
         </div>
-        <div className="text-xs text-text-muted truncate">
-          by Kainoa Newton
-        </div>
-        <div className="text-xs text-text-muted truncate">
-          {dayjs(page.updated_at).fromNow()}
+        <div className="flex items-center gap-2 mt-0.5">
+          {/* User Avatar */}
+          <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-accent-blue to-purple-600 text-white">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={userName}
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <User className="h-2.5 w-2.5" />
+            )}
+          </div>
+          <span className="text-xs text-text-muted truncate">
+            {dayjs(page.updated_at).fromNow()}
+          </span>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+      <div className="flex items-center justify-center w-6 h-6 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
         <Button size="sm" variant="ghost" className="h-6 w-6 p-0 flex-shrink-0">
           <MoreHorizontal className="h-3 w-3" />
         </Button>
@@ -515,6 +496,14 @@ export default function Sidebar({ className }: SidebarProps) {
     }
   }
 
+  // Handle back to dashboard navigation with folder selected
+  function handleBackToDashboard() {
+    if (currentFolder) {
+      setSelectedFolderId(currentFolder.folder_id);
+    }
+    navigate({ to: "/pages" });
+  }
+
   // Handle folder deletion
   async function handleDeleteFolder(folderId: string) {
     // Find the folder being deleted
@@ -578,9 +567,6 @@ export default function Sidebar({ className }: SidebarProps) {
         className
       )}
     >
-      {/* User Profile Header */}
-      <UserProfileHeader />
-
       {/* Sidebar Content */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden py-4 min-w-0">
         {/* Search Section */}
@@ -588,10 +574,7 @@ export default function Sidebar({ className }: SidebarProps) {
           <SearchButton onClick={() => setSearchOpen(true)} />
         </div>
 
-        {/* Dashboard Section */}
-        <div className="mb-6 min-w-0">
-          <DashboardButton />
-        </div>
+
 
 
 
@@ -630,6 +613,7 @@ export default function Sidebar({ className }: SidebarProps) {
           <FolderPagesSection
             folderName={currentFolder.name}
             onCreatePage={handleCreatePageInFolder}
+            onBackToDashboard={handleBackToDashboard}
           >
             {folderPagesLoading ? (
               <div className="px-3 py-4">
