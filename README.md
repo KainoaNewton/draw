@@ -1,22 +1,19 @@
 [![Draw Logo](https://raw.githubusercontent.com/macintushar/draw/main/public/draw-logo.png)]()
 
-<div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-  <a href="https://codeclimate.com/github/macintushar/draw/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/01b60d9dbd7f8af2d25f/maintainability" alt="Maintainability" />
-  </a>
-</div>
+> [!Note]
+> This is a fork of [macintushar/draw](https://github.com/macintushar/draw)
 
 Draw is a wrapper around Excalidraw, integrated with Supabase to save and sync your drawings seamlessly across different devices. It allows you to use Excalidraw anywhere while keeping your data available everywhere.
 
-## Features
+## Features diff from fork
 
-- **Excalidraw Integration:** Leverages the functionality of Excalidraw, a popular web-based drawing tool.
-- **Supabase Backend:** Uses Supabase for authentication and storage, ensuring secure access and synchronization of your drawings.
-- **Cross-Platform Sync:** Access your drawings from any device by securely saving them to your Supabase database.
-
-## Acknowledgments
-
-- [Excalidraw](https://excalidraw.com/) for providing the best open-source drawing tool. This wouldn't be possible without them (literally).
+```diff
+* Excalidraw: Leverages the functionality of Excalidraw, a popular web-based drawing tool.
+* Cloud Sync: Uses Supabase for authentication and storage, ensuring secure access and synchronization of your drawings.
++ Folders: Organize drawings into folders.
++ Sidebar: Navigate and manage folders and drawings from a sleek sidebar.
+- Clunky UI: Removed clunky, unnecessary ui components from the UI.
+```
 
 ## Getting Started
 
@@ -32,9 +29,9 @@ Draw is a wrapper around Excalidraw, integrated with Supabase to save and sync y
 To deploy the app, you can use platforms like Vercel or Netlify.
 We have set up a one-click deploy to Vercel.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/macintushar/draw)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/KainoaNewton/draw)
 
-If you want to deploy using Docker, you can use the provided docker-compose file, using the instruction in the [Docker](https://github.com/macintushar/draw/blob/main/docs/docker.md) section.
+If you want to deploy using Docker, you can use the provided docker-compose file, using the instruction in the [Docker](https://github.com/kainoanewton/draw/blob/main/docs/docker.md) section.
 
 If you'd like to build the app yourself, run:
 
@@ -51,6 +48,7 @@ Deploy to other hosting providers by following their specific deployment instruc
 - Supabase
 - Sentry
 - Day.js
+- cmdk
 - Zod
 - Bun
 
@@ -58,7 +56,7 @@ and many others.
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes. For major changes, please open an issue to discuss what you would like to change.
+Contributions are welcome! For major changes, please open an issue to discuss what you would like to change. Otherwise:
 
 1.  Fork the repository
 2.  Create your feature branch
@@ -101,10 +99,16 @@ Run the development server:
 
 Your app will be available at <http://localhost:5173>.
 
+## Acknowledgments
+
+- [Excalidraw](https://excalidraw.com/) for providing the best open-source drawing tool. This wouldn't be possible without them (literally).
+- [macintushar/draw](https://github.com/macintushar/draw) for the original project this was forked from.
+- 
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/macintushar/draw/blob/main/LICENCE) file for more details.
 
 ## Contact
 
-If you have any questions or suggestions, feel free to reach out!
+If you have any questions or suggestions, feel free to email me at (k@kainoa.me)[mailto:k@kainoa.me]
