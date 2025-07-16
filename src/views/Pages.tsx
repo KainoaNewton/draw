@@ -66,6 +66,7 @@ export default function Pages() {
       // Invalidate caches to update sidebar immediately
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["folderPages"] });
+      queryClient.invalidateQueries({ queryKey: ["folderPageCounts"] });
     }
     if (data.error) {
       toast("An error occurred", {
