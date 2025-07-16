@@ -102,15 +102,15 @@ function SearchButton({ onClick }: { onClick: () => void }) {
     <div className="mx-4">
       <button
         onClick={onClick}
-        className="flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-md transition-all duration-200 ease-in-out cursor-pointer text-text-muted hover:bg-background-hover hover:text-text-primary bg-background-card border border-border-subtle"
+        className="flex items-center justify-between w-full px-3 py-3 text-sm rounded-md transition-all duration-200 ease-in-out cursor-pointer text-text-muted hover:bg-background-hover hover:text-text-primary bg-background-card border border-border-subtle group"
       >
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <Search className="h-4 w-4 flex-shrink-0" />
-          <span className="font-normal truncate">Quick search</span>
+          <Search className="h-4 w-4 flex-shrink-0 group-hover:text-accent-blue transition-colors" />
+          <span className="font-normal truncate">Search & commands</span>
         </div>
         <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
-          <kbd className="px-1.5 py-0.5 text-xs bg-background-hover rounded text-text-muted border border-border-subtle">⌘</kbd>
-          <kbd className="px-1.5 py-0.5 text-xs bg-background-hover rounded text-text-muted border border-border-subtle">K</kbd>
+          <kbd className="px-1.5 py-0.5 text-xs bg-background-main rounded text-text-muted border border-border-subtle font-mono">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 text-xs bg-background-main rounded text-text-muted border border-border-subtle font-mono">K</kbd>
         </div>
       </button>
     </div>
