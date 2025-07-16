@@ -36,6 +36,12 @@ export default function HomePage() {
     console.error("Authentication query error:", error);
   }
 
+  useEffect(() => {
+    if (data === true) {
+      navigate({ to: "/pages" });
+    }
+  }, [data, navigate]);
+
   function action(authenticated: boolean) {
     if (authenticated === true) {
       navigate({ to: "/pages" });
