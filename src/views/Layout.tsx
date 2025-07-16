@@ -3,8 +3,12 @@ import { Outlet } from "@tanstack/react-router";
 import { FolderProvider } from "@/contexts/FolderContext";
 import { ProfileOverlayProvider } from "@/contexts/ProfileOverlayContext";
 import ProfileOverlay from "@/components/ProfileOverlay";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 
 export default function Layout() {
+  // Initialize offline sync functionality
+  useOfflineSync();
+
   // Remove special handling for mermaid route
   const shouldHideSidebar = false;
 
