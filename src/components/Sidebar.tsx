@@ -99,7 +99,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SearchCommand } from "./SearchCommand";
 import { useState } from "react";
-import { createNewPage, createFolder, deleteFolder, updateFolder } from "@/db/draw";
+import { createNewPage, createFolder, renameFolder, deleteFolder } from "@/db/draw";
+import { folderDataStore } from "@/stores/folderDataStore";
+import { offlineStore } from "@/stores/offlineStore";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -569,6 +572,7 @@ export default function Sidebar({ className }: SidebarProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchOpen, setSearchOpen] = useState(false);
+  const { isOnline } = useOfflineSync();
 
   // Get folder context data
   const { selectedFolderId, setSelectedFolderId, folders, isLoading: foldersLoading } = useFolderContext();
@@ -597,24 +601,34 @@ export default function Sidebar({ className }: SidebarProps) {
 
   // Handle folder creation
   async function handleCreateFolder() {
-    const data = await createFolder("New Folder");
-    if (data.data && data.data[0]?.folder_id) {
-      // Invalidate all related queries
-      await queryClient.invalidateQueries({ queryKey: ["folders"] });
-      await queryClient.invalidateQueries({ queryKey: ["folderPages"] });
+    if (isOnline) {
+      // If online, create folder directly
+      const data = await createFolder("New Folder");
+      if (data.data && data.data[0]?.folder_id) {
+        // Invalidate all related queries
+        await queryClient.invalidateQueries({ queryKey: ["folders"] });
+        await queryClient.invalidateQueries({ queryKey: ["folderPages"] });
 
-      // Always set the new folder as selected
-      setSelectedFolderId(data.data[0].folder_id);
+        // Always set the new folder as selected
+        setSelectedFolderId(data.data[0].folder_id);
 
-      if (!isOnPagesView) {
-        navigate({ to: "/pages" });
+        if (!isOnPagesView) {
+          navigate({ to: "/pages" });
+        }
+        toast("Successfully created a new folder!");
       }
-      toast("Successfully created a new folder!");
-    }
-    if (data.error) {
-      toast("An error occurred", {
-        description: `Error: ${data.error.message}`,
+      if (data.error) {
+        toast("An error occurred", {
+          description: `Error: ${data.error.message}`,
+        });
+      }
+    } else {
+      // If offline, add to pending changes queue
+      offlineStore.getState().addPendingChange({
+        type: 'folder_create',
+        name: "New Folder",
       });
+      toast("Folder creation queued - will sync when online");
     }
   }
 
@@ -638,15 +652,51 @@ export default function Sidebar({ className }: SidebarProps) {
 
   // Handle folder rename
   async function handleRenameFolder(folderId: string, newName: string) {
-    const data = await updateFolder(folderId, { name: newName });
-    if (data.data) {
-      queryClient.invalidateQueries({ queryKey: ["folders"] });
-      toast("Successfully renamed folder!");
+const updatedAt = new Date().toISOString();
+
+// Always save locally first
+const existingFolder = folders?.find(f => f.folder_id === folderId);
+if (existingFolder) {
+  folderDataStore.getState().setFolderData(
+    folderId,
+    newName,
+    updatedAt,
+    existingFolder.user_id,
+    existingFolder.created_at
+  );
+}
+
+const data = await updateFolder(folderId, { name: newName });
+if (data.data) {
+  queryClient.invalidateQueries({ queryKey: ["folders"] });
+  toast("Successfully renamed folder!");
+}
     }
-    if (data.error) {
-      toast("An error occurred", {
-        description: `Error: ${data.error.message}`,
+
+    if (isOnline) {
+      // If online, try to sync to Supabase immediately
+      const data = await renameFolder(folderId, newName);
+      if (data.data) {
+        queryClient.invalidateQueries({ queryKey: ["folders"] });
+        toast("Successfully renamed folder!");
+      }
+      if (data.error) {
+        // If sync fails, add to offline queue
+        offlineStore.getState().addPendingChange({
+          type: 'folder_rename',
+          folder_id: folderId,
+          name: newName,
+        });
+        toast("Folder renamed locally - will sync when online");
+      }
+    } else {
+      // If offline, add to pending changes queue
+      offlineStore.getState().addPendingChange({
+        type: 'folder_rename',
+        folder_id: folderId,
+        name: newName,
       });
+      toast("Folder renamed offline - will sync when online");
     }
   }
 
