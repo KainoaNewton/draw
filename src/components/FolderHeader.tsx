@@ -10,10 +10,9 @@ import EmojiIconPicker from "./EmojiIconPicker";
 
 interface FolderHeaderProps {
   folder: Folder;
-  onCreatePage: () => void;
 }
 
-export default function FolderHeader({ folder, onCreatePage }: FolderHeaderProps) {
+export default function FolderHeader({ folder }: FolderHeaderProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(folder.name);
   const [showIconPicker, setShowIconPicker] = useState(false);
@@ -101,7 +100,7 @@ export default function FolderHeader({ folder, onCreatePage }: FolderHeaderProps
 
   return (
     <>
-      {/* Folder Header - Top Left of Page */}
+      {/* Folder Header - Left aligned with emoji and name */}
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
@@ -166,15 +165,6 @@ export default function FolderHeader({ folder, onCreatePage }: FolderHeaderProps
             </Button>
           </div>
         )}
-
-        {/* New Page button */}
-        <Button
-          variant="default"
-          className="font-medium text-sm ml-4"
-          onClick={onCreatePage}
-        >
-          + New Page
-        </Button>
       </div>
 
       {/* Emoji/Icon Picker Modal */}

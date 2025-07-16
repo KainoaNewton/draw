@@ -83,51 +83,57 @@ export default function FolderView({ folderId }: FolderViewProps) {
   }
 
   return (
-    <div className="h-full w-full">
-      {/* Folder Header in Top-Left of Page */}
-      <div className="p-4 border-b border-border">
+    <div className="mx-4 my-4 h-full w-full">
+      {/* Folder Header - Left aligned in main content area */}
+      <div className="flex items-center justify-between mb-6">
         <FolderHeader
           folder={currentFolder}
-          onCreatePage={createPage}
         />
+
+        {/* New Page button on the right */}
+        <Button
+          variant="default"
+          className="font-medium text-sm"
+          onClick={createPage}
+        >
+          + New Page
+        </Button>
       </div>
 
-      {/* Main Content Area */}
-      <div className="p-4 h-full overflow-auto">
-        <div className="flex flex-wrap gap-4 py-2">
-          {pagesLoading ? (
-            <Loader />
-          ) : pages && pages.length > 0 ? (
-            pages?.map((page) => (
-              <Card
-                key={page.page_id}
-                className="group h-fit max-h-32 w-fit max-w-80 cursor-pointer transition-all duration-200 hover:bg-background-hover"
-              >
-                <div onClick={() => goToPage(page.page_id)}>
-                  <CardContent className="flex w-full flex-col justify-end gap-2 p-4 text-sm">
-                    <CardTitle className="line-clamp-1 font-virgil text-base">
-                      {page.name || "Untitled"}
-                    </CardTitle>
-                    <span className="text-xs text-text-secondary">
-                      Last updated: {dayjs(page.updated_at).format("MMM DD, YYYY")}
-                    </span>
-                  </CardContent>
-                </div>
-                <div className="flex w-full items-end justify-end p-2">
-                  <Trash2
-                    className="h-4 w-4 cursor-pointer text-text-muted opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePageDelete(page.page_id);
-                    }}
-                  />
-                </div>
-              </Card>
-            ))
-          ) : (
-            <NoData />
-          )}
-        </div>
+      {/* Pages Grid */}
+      <div className="flex flex-wrap gap-4 py-2">
+        {pagesLoading ? (
+          <Loader />
+        ) : pages && pages.length > 0 ? (
+          pages?.map((page) => (
+            <Card
+              key={page.page_id}
+              className="group h-fit max-h-32 w-fit max-w-80 cursor-pointer transition-all duration-200 hover:bg-background-hover"
+            >
+              <div onClick={() => goToPage(page.page_id)}>
+                <CardContent className="flex w-full flex-col justify-end gap-2 p-4 text-sm">
+                  <CardTitle className="line-clamp-1 font-virgil text-base">
+                    {page.name || "Untitled"}
+                  </CardTitle>
+                  <span className="text-xs text-text-secondary">
+                    Last updated: {dayjs(page.updated_at).format("MMM DD, YYYY")}
+                  </span>
+                </CardContent>
+              </div>
+              <div className="flex w-full items-end justify-end p-2">
+                <Trash2
+                  className="h-4 w-4 cursor-pointer text-text-muted opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePageDelete(page.page_id);
+                  }}
+                />
+              </div>
+            </Card>
+          ))
+        ) : (
+          <NoData />
+        )}
       </div>
     </div>
   );
