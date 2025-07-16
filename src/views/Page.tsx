@@ -1,22 +1,20 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import Loader from "@/components/Loader";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
+import { Wifi, WifiOff, RotateCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
 import { NonDeletedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { RefreshCcw } from "lucide-react";
+
 import { getDrawData, setDrawData } from "@/db/draw";
 import { drawDataStore } from "@/stores/drawDataStore";
+import { offlineStore } from "@/stores/offlineStore";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 
 type PageProps = {
   id: string;
@@ -28,6 +26,7 @@ export default function Page({ id }: PageProps) {
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const { theme } = useTheme();
+  const { isOnline, isSyncing, pendingChangesCount } = useOfflineSync();
   const queryClient = useQueryClient();
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -99,21 +98,41 @@ export default function Page({ id }: PageProps) {
       if (JSON.stringify(existingData?.elements) !== JSON.stringify(scene)) {
         setIsSaving(true);
 
-        // Save locally first with current timestamp to establish precedence
+        // Always save locally first with current timestamp to establish precedence
         drawDataStore.getState().setPageData(id, scene, updatedAt, name);
 
-        // Then push to API without invalidating cache (to prevent data loss)
-        mutate(
-          {
+        if (isOnline) {
+          // If online, try to sync to Supabase immediately
+          mutate(
+            {
+              elements: scene as NonDeletedExcalidrawElement[],
+              name,
+            },
+            {
+              onSettled() {
+                setIsSaving(false);
+              },
+              onError() {
+                // If sync fails, add to offline queue
+                offlineStore.getState().addPendingChange({
+                  type: 'page_update',
+                  page_id: id,
+                  elements: scene as NonDeletedExcalidrawElement[],
+                  name,
+                });
+              },
+            },
+          );
+        } else {
+          // If offline, add to pending changes queue
+          offlineStore.getState().addPendingChange({
+            type: 'page_update',
+            page_id: id,
             elements: scene as NonDeletedExcalidrawElement[],
             name,
-          },
-          {
-            onSettled() {
-              setIsSaving(false);
-            },
-          },
-        );
+          });
+          setIsSaving(false);
+        }
       }
     }
   }, [excalidrawAPI, id, name, mutate, isSaving]);
@@ -164,13 +183,45 @@ export default function Page({ id }: PageProps) {
     debounceTimeout.current = setTimeout(() => {
       const scene = excalidrawAPI.getSceneElements();
       setIsSaving(true);
-      drawDataStore.getState().setPageData(id, scene, new Date().toISOString(), name);
-      mutate({ elements: scene as NonDeletedExcalidrawElement[], name });
+      const updatedAt = new Date().toISOString();
+
+      // Always save locally first
+      drawDataStore.getState().setPageData(id, scene, updatedAt, name);
+
+      if (isOnline) {
+        // If online, try to sync to Supabase immediately
+        mutate(
+          { elements: scene as NonDeletedExcalidrawElement[], name },
+          {
+            onSettled() {
+              setIsSaving(false);
+            },
+            onError() {
+              // If sync fails, add to offline queue
+              offlineStore.getState().addPendingChange({
+                type: 'page_update',
+                page_id: id,
+                elements: scene as NonDeletedExcalidrawElement[],
+                name,
+              });
+            },
+          }
+        );
+      } else {
+        // If offline, add to pending changes queue
+        offlineStore.getState().addPendingChange({
+          type: 'page_update',
+          page_id: id,
+          elements: scene as NonDeletedExcalidrawElement[],
+          name,
+        });
+        setIsSaving(false);
+      }
     }, 400); // 400ms debounce
     return () => {
       if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
     };
-  }, [name, excalidrawAPI]);
+  }, [name, excalidrawAPI, isOnline, mutate, id]);
 
   return (
     <div className="flex w-full flex-col">
@@ -187,7 +238,7 @@ export default function Page({ id }: PageProps) {
                 excalidrawAPI={(api) => setExcalidrawAPI(api)}
                 initialData={{ appState: { theme: theme } }}
                 renderTopRightUI={() => (
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     <Input
                       onChange={(e) => setName(e.target.value)}
                       value={name}
@@ -201,37 +252,33 @@ export default function Page({ id }: PageProps) {
                       }}
                       placeholder="Page Title"
                     />
-                    {/* Removed Save button for name, now auto-saves */}
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={updateScene}
-                            className="border-0 shadow-sm transition-colors rounded-lg h-9 w-9 p-0"
-                            style={{
-                              backgroundColor: '#23232A',
-                              borderRadius: '8px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#363541';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#23232A';
-                            }}
-                          >
-                            <RefreshCcw className="h-4 w-4" style={{ color: '#E3E3E8' }} />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>
-                            Refreshes the page. This removes any unsaved changes.
-                            Use with caution.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    {/* Sync status indicator */}
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-md text-xs" style={{
+                      backgroundColor: '#23232A',
+                      color: '#E3E3E8'
+                    }}>
+                      {isSyncing ? (
+                        <>
+                          <RotateCw className="h-3 w-3 animate-spin" />
+                          <span>Syncing</span>
+                        </>
+                      ) : isOnline ? (
+                        <>
+                          <Wifi className="h-3 w-3 text-green-400" />
+                          <span>Online</span>
+                        </>
+                      ) : (
+                        <>
+                          <WifiOff className="h-3 w-3 text-orange-400" />
+                          <span>Offline</span>
+                          {pendingChangesCount > 0 && (
+                            <span className="ml-1 px-1 py-0.5 bg-orange-500 text-white rounded-full text-xs">
+                              {pendingChangesCount}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 )}
                 theme={theme === "dark" ? "dark" : "light"}
