@@ -353,7 +353,7 @@ function PageItem({ page, isActive }: SidebarItemProps) {
       {/* Content */}
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="truncate font-medium text-sm leading-tight">
-          {page.name || "Untitled"}
+          {page.name}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           {/* User Avatar */}
@@ -457,7 +457,7 @@ export default function Sidebar({ className }: SidebarProps) {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["folderPages"] });
       navigate({ to: "/page/$id", params: { id: data.data[0].page_id } });
-      toast("Successfully created a new page!");
+      toast("Successfully created a new drawing!");
     }
     if (data.error) {
       toast("An error occurred", {

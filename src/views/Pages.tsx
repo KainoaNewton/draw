@@ -48,7 +48,7 @@ export default function Pages() {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["folderPages"] });
       goToPage(data.data[0].page_id);
-      toast("Successfully created a new page!");
+      toast("Successfully created a new drawing!");
     }
 
     if (data.error) {
@@ -96,7 +96,7 @@ export default function Pages() {
               <div onClick={() => goToPage(page.page_id)}>
                 <CardContent className="flex w-full flex-col justify-end gap-2 p-4 text-sm">
                   <CardTitle className="line-clamp-1 font-virgil text-base">
-                    {page.name || "Untitled"}
+                    {page.name}
                   </CardTitle>
                   <span className="text-xs text-text-secondary">
                     Last updated: {dayjs(page.updated_at).format("MMM DD, YYYY")}

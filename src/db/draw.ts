@@ -65,7 +65,8 @@ export async function createNewPage(
       .insert({
         user_id: profile.user?.id,
         page_elements: { elements },
-        folder_id: finalFolderId
+        folder_id: finalFolderId,
+        name: "Untitled"
       })
       .select();
     return { data, error };
