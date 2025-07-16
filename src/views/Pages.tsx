@@ -7,31 +7,192 @@ import NoData from "./NoData";
 import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-
-dayjs.extend(relativeTime);
 import { useNavigate } from "@tanstack/react-router";
 import { useFolderPages } from "@/hooks/useFolders";
 import { useFolderContext } from "@/contexts/FolderContext";
-import { Trash2, Edit2 } from "lucide-react";
+import { 
+  Trash2,
+  Folder,
+  FolderOpen,
+  File,
+  FileText,
+  Image,
+  Video,
+  Music,
+  Archive,
+  Download,
+  Upload,
+  Settings,
+  User,
+  Users,
+  Heart,
+  Star,
+  Home,
+  Building,
+  Camera,
+  Phone,
+  Mail,
+  Calendar,
+  Clock,
+  MapPin,
+  Globe,
+  Wifi,
+  Battery,
+  Zap,
+  Sun,
+  Coffee,
+  Gift,
+  ShoppingCart,
+  CreditCard,
+  Bookmark,
+  Tag,
+  Flag,
+  Bell,
+  Lock,
+  Key,
+  Shield,
+  Eye,
+  EyeOff,
+  Edit,
+  Plus,
+  Minus,
+  Check,
+  X as XIcon,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  RotateCcw,
+  RotateCw,
+  RefreshCw,
+  Play,
+  Pause,
+  Square,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
+  Copy,
+  Scissors,
+  Clipboard,
+  Link,
+  ExternalLink,
+  Info,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  HelpCircle,
+  MessageCircle,
+  Send,
+  Share,
+  ThumbsUp,
+  ThumbsDown,
+  Smile as SmileIcon,
+  Frown,
+  Meh,
+  Search
+} from "lucide-react";
 import EmojiPicker from "@/components/EmojiPicker";
 import { useState } from "react";
 
-function NewPageOptionDropdown({
-  createPageFn,
-}: {
-  createPageFn: () => void;
-}) {
-  return (
-    <Button
-      variant="default"
-      className="font-medium text-sm bg-accent-blue hover:bg-accent-blue/80 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2"
-      onClick={createPageFn}
-    >
-      <span className="text-lg">+</span>
-      New drawing
-    </Button>
-  );
-}
+dayjs.extend(relativeTime);
+
+// Icon mapping for Lucide icons
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Folder,
+  FolderOpen,
+  File,
+  FileText,
+  Image,
+  Video,
+  Music,
+  Archive,
+  Download,
+  Upload,
+  Settings,
+  User,
+  Users,
+  Heart,
+  Star,
+  Home,
+  Building,
+  Camera,
+  Phone,
+  Mail,
+  Calendar,
+  Clock,
+  MapPin,
+  Globe,
+  Wifi,
+  Battery,
+  Zap,
+  Sun,
+  Coffee,
+  Gift,
+  ShoppingCart,
+  CreditCard,
+  Bookmark,
+  Tag,
+  Flag,
+  Bell,
+  Lock,
+  Key,
+  Shield,
+  Eye,
+  EyeOff,
+  Edit,
+  Plus,
+  Minus,
+  Check,
+  XIcon,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  RotateCcw,
+  RotateCw,
+  RefreshCw,
+  Play,
+  Pause,
+  Square,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
+  Copy,
+  Scissors,
+  Clipboard,
+  Link,
+  ExternalLink,
+  Info,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  HelpCircle,
+  MessageCircle,
+  Send,
+  Share,
+  ThumbsUp,
+  ThumbsDown,
+  SmileIcon,
+  Frown,
+  Meh,
+  Search,
+};
+
+// Helper function to render either emoji or icon
+const renderIcon = (iconValue: string | undefined) => {
+  if (!iconValue) return "📁";
+  
+  // Check if it's a Lucide icon name
+  const IconComponent = ICON_MAP[iconValue];
+  if (IconComponent) {
+    return <IconComponent className="h-8 w-8 text-text-primary" />;
+  }
+  
+  // Otherwise, it's an emoji
+  return iconValue;
+};
 
 export default function Pages() {
   const navigate = useNavigate();
@@ -51,19 +212,14 @@ export default function Pages() {
     navigate({ to: "/page/$id", params: { id: id } });
   }
 
-  async function createPage() {
+  async function handlePageCreate() {
     if (!selectedFolderId) return;
 
     const data = await createNewPage(undefined, selectedFolderId);
 
     if (data.data && data.data[0]?.page_id) {
-      // Invalidate caches to update sidebar immediately
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
-      queryClient.invalidateQueries({ queryKey: ["folderPages"] });
-      goToPage(data.data[0].page_id);
-      toast("Successfully created a new page!");
+      navigate({ to: "/page/$id", params: { id: data.data[0].page_id } });
     }
-
     if (data.error) {
       toast("An error occurred", {
         description: `Error: ${data.error.message}`,
@@ -71,12 +227,11 @@ export default function Pages() {
     }
   }
 
-  async function handlePageDelete(id: string) {
-    const data = await deletePage(id);
+  async function handlePageDelete(pageId: string) {
+    const data = await deletePage(pageId);
 
-    if (data.data === null) {
-      toast("Successfully deleted the page!");
-      // Invalidate caches to update sidebar immediately
+    if (data.data) {
+      toast("Page deleted!");
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["folderPages"] });
     }
@@ -146,7 +301,7 @@ export default function Pages() {
             className="flex items-center justify-center h-12 px-3 text-3xl transition-all duration-200 cursor-pointer rounded-lg hover:bg-background-hover"
             title="Click to change folder icon"
           >
-            {selectedFolder?.icon || "📁"}
+            {renderIcon(selectedFolder?.icon)}
           </button>
 
           {/* Folder Name - Same height as icon */}
@@ -158,53 +313,53 @@ export default function Pages() {
                 onChange={(e) => setEditingName(e.target.value)}
                 onBlur={() => handleFolderNameUpdate(editingName)}
                 onKeyDown={handleNameKeyPress}
-                className="bg-background-input border border-accent-blue rounded-md px-3 py-2 h-12 text-xl font-bold text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-blue/50 min-w-[200px]"
+                className="h-12 px-3 text-2xl font-bold bg-background-input border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-blue/50 focus:border-accent-blue"
                 autoFocus
-                placeholder="Folder name..."
               />
-              <div className="absolute -bottom-6 left-0 text-xs text-text-muted">
-                Press Enter to save, Esc to cancel
-              </div>
             </div>
           ) : (
             <button
               onClick={startEditingName}
-              className="flex items-center h-12 px-3 text-2xl font-bold text-text-primary hover:text-accent-blue hover:bg-background-hover transition-all duration-200 cursor-pointer rounded-lg"
+              className="h-12 px-3 text-2xl font-bold text-text-primary hover:bg-background-hover rounded-lg transition-all duration-200 text-left"
               title="Click to edit folder name"
             >
-              {selectedFolder?.name || "PAGES"}
+              {selectedFolder?.name || "Untitled Folder"}
             </button>
           )}
         </div>
 
-        {/* New Drawing Button */}
-        <NewPageOptionDropdown createPageFn={createPage} />
+        <Button onClick={handlePageCreate} className="bg-accent-blue hover:bg-accent-blue/80">
+          New Drawing
+        </Button>
       </div>
 
-      <div className="flex flex-wrap gap-4 py-2">
+      {/* Pages Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {pagesLoading ? (
           <Loader />
         ) : pages && pages.length > 0 ? (
-          pages?.map((page) => (
+          pages.map((page) => (
             <Card
               key={page.page_id}
-              className="group h-fit max-h-32 w-fit max-w-80 cursor-pointer transition-all duration-200 hover:bg-background-hover"
+              className="group relative cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] bg-background-secondary border-border"
+              onClick={() => goToPage(page.page_id)}
             >
-              <div onClick={() => goToPage(page.page_id)}>
-                <CardContent className="flex w-full flex-col justify-end gap-2 p-4 text-sm">
-                  <CardTitle className="line-clamp-1 font-virgil text-base">
-                    {page.name || "Untitled"}
-                  </CardTitle>
-                  <span className="text-xs text-text-secondary">
-                    Last updated: {dayjs(page.updated_at).format("MMM DD, YYYY")}
-                  </span>
-                </CardContent>
-              </div>
-              <div className="flex w-full items-end justify-end p-2">
+              <CardContent className="p-4">
+                <CardTitle className="text-lg font-semibold text-text-primary mb-2 truncate">
+                  {page.name}
+                </CardTitle>
+                <p className="text-sm text-text-muted">
+                  {dayjs(page.updated_at).fromNow()}
+                </p>
+              </CardContent>
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Trash2
                   className="invisible h-4 w-4 cursor-pointer rounded-button text-text-muted transition-all hover:bg-background-hover hover:text-red-400 group-hover:visible p-1"
                   strokeWidth={2}
-                  onClick={() => handlePageDelete(page.page_id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePageDelete(page.page_id);
+                  }}
                 />
               </div>
             </Card>

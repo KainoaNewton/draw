@@ -6,7 +6,91 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Search, X, Smile, Shapes } from "lucide-react";
+import {
+  Search,
+  X,
+  Smile,
+  Shapes,
+  Folder,
+  FolderOpen,
+  File,
+  FileText,
+  Image,
+  Video,
+  Music,
+  Archive,
+  Download,
+  Upload,
+  Settings,
+  User,
+  Users,
+  Heart,
+  Star,
+  Home,
+  Building,
+  Camera,
+  Phone,
+  Mail,
+  Calendar,
+  Clock,
+  MapPin,
+  Globe,
+  Wifi,
+  Battery,
+  Zap,
+  Sun,
+  Coffee,
+  Gift,
+  ShoppingCart,
+  CreditCard,
+  Bookmark,
+  Tag,
+  Flag,
+  Bell,
+  Lock,
+  Key,
+  Shield,
+  Eye,
+  EyeOff,
+  Edit,
+  Trash2,
+  Plus,
+  Minus,
+  Check,
+  X as XIcon,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  RotateCcw,
+  RotateCw,
+  RefreshCw,
+  Play,
+  Pause,
+  Square,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
+  Copy,
+  Scissors,
+  Clipboard,
+  Link,
+  ExternalLink,
+  Info,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  HelpCircle,
+  MessageCircle,
+  Send,
+  Share,
+  ThumbsUp,
+  ThumbsDown,
+  Smile as SmileIcon,
+  Frown,
+  Meh
+} from "lucide-react";
 
 interface EmojiPickerProps {
   isOpen: boolean;
@@ -17,40 +101,40 @@ interface EmojiPickerProps {
 
 type TabType = "emojis" | "icons";
 
+// Only actual emojis for the Emojis tab (deduplicated)
 const EMOJI_CATEGORIES = {
   recent: ["📁", "📂", "🎨", "💼", "🚀", "⭐", "💡", "🔥", "📊", "🎯", "💻", "🌟"],
-  folders: ["📁", "📂", "🗂️", "📋", "📊", "📈", "📉", "📄", "📃", "📑", "🗃️", "🗄️", "📇", "🗂", "📰", "📓", "📔", "📒", "📕", "📗", "📘", "📙", "📚"],
-  work: ["💼", "🎯", "🔧", "⚙️", "🔨", "🛠️", "📦", "🎨", "✏️", "📝", "💻", "⌨️", "🖥️", "📱", "📞", "☎️", "📠", "🖨️", "🖱️", "💾", "💿", "📀", "🎮", "🕹️"],
-  symbols: ["⭐", "🔥", "💡", "🚀", "🎉", "🏆", "💎", "🔮", "⚡", "🌟", "✨", "💫", "🎊", "🎈", "🎁", "🎀", "🎗️", "🏅", "🥇", "🥈", "🥉", "🏵️", "🎖️", "🔱"],
-  nature: ["🌱", "🌿", "🍀", "🌸", "🌺", "🌻", "🌷", "🌹", "🌼", "🌵", "🌲", "🌳", "🌴", "🌾", "🌊", "🌈", "☀️", "🌙", "⭐", "🌟", "💫", "✨", "☁️", "⛅"],
-  hearts: ["❤️", "💙", "💚", "💛", "🧡", "💜", "🖤", "🤍", "🤎", "💖", "💕", "💗", "💘", "💝", "💞", "💟", "❣️", "💔", "❤️‍🔥", "❤️‍🩹", "💋", "💌", "💐", "🌹"],
+  folders: ["🗂️", "📋", "📈", "📉", "📄", "📃", "📑", "🗃️", "🗄️", "📇", "📰", "📓", "📔", "📒", "📕", "📗", "📘", "📙", "📚"],
+  work: ["🔧", "⚙️", "🔨", "🛠️", "📦", "✏️", "📝", "⌨️", "🖥️", "📱", "📞", "☎️", "📠", "🖨️", "🖱️", "💾", "💿", "📀", "🎮", "🕹️"],
+  symbols: ["🎉", "🏆", "💎", "🔮", "⚡", "✨", "💫", "🎊", "🎈", "🎁", "🎀", "🎗️", "🏅", "🥇", "🥈", "🥉", "🏵️", "🎖️", "🔱"],
+  nature: ["🌱", "🌿", "🍀", "🌸", "🌺", "🌻", "🌷", "🌹", "🌼", "🌵", "🌲", "🌳", "🌴", "🌾", "🌊", "🌈", "☀️", "🌙", "☁️", "⛅"],
+  hearts: ["❤️", "💙", "💚", "💛", "🧡", "💜", "🖤", "🤍", "🤎", "💖", "💕", "💗", "💘", "💝", "💞", "💟", "❣️", "💔", "❤️‍🔥", "❤️‍🩹", "💋", "💌", "💐"],
   faces: ["😀", "😊", "🤔", "😎", "🤓", "😴", "🤗", "😇", "🙂", "😉", "😍", "🥰", "😋", "😌", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😗", "😙", "😚"],
-  objects: ["🎪", "🎭", "🎨", "🎬", "🎤", "🎧", "🎼", "🎵", "🎶", "🎹", "🥁", "🎷", "🎺", "🎸", "🪕", "🎻", "🎲", "♠️", "♥️", "♦️", "♣️", "🃏", "🀄", "🎯"],
+  objects: ["🎪", "🎭", "🎬", "🎤", "🎧", "🎼", "🎵", "🎶", "🎹", "🥁", "🎷", "🎺", "🎸", "🪕", "🎻", "🎲", "♠️", "♥️", "♦️", "♣️", "🃏", "🀄"],
   food: ["🍎", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐", "🍈", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝", "🍅", "🍆", "🥑", "🥦", "🥬", "🥒", "🌶️", "🫑", "🌽"],
 };
 
+// Lucide icon components for the Icons tab (deduplicated)
 const ICON_CATEGORIES = {
-  recent: ["📁", "💼", "⚙️", "🎯", "📊", "💡", "🔧", "📈", "🎨", "⭐", "🚀", "🔥"],
-  shapes: ["⭐", "🔥", "💎", "⚡", "🌟", "✨", "💫", "🔮", "🎯", "🎪", "🎭", "🎨", "🎬", "🎤", "🎧", "🎼", "🎵", "🎶", "🎹", "🥁", "🎷", "🎺", "🎸", "🎻"],
-  arrows: ["⬆️", "↗️", "➡️", "↘️", "⬇️", "↙️", "⬅️", "↖️", "↕️", "↔️", "↩️", "↪️", "⤴️", "⤵️", "🔃", "🔄", "🔙", "🔚", "🔛", "🔜", "🔝", "🔀", "🔁", "🔂"],
-  symbols: ["✅", "❌", "⭕", "🔴", "🟠", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫", "⚪", "🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬛", "⬜", "◼️", "◻️", "▪️"],
-  tech: ["💻", "🖥️", "🖨️", "⌨️", "🖱️", "🖲️", "💾", "💿", "📀", "📱", "☎️", "📞", "📠", "📺", "📻", "🎙️", "🎚️", "🎛️", "🧭", "⏱️", "⏲️", "⏰", "🕰️", "⌛"],
-  business: ["💼", "📊", "📈", "📉", "💹", "💰", "💳", "💎", "⚖️", "🔧", "🔨", "⚙️", "🛠️", "⛏️", "🔩", "⚗️", "🧪", "🧬", "🔬", "🔭", "📡", "💉", "🩹", "🩺"],
-  misc: ["🎲", "🧩", "♠️", "♥️", "♦️", "♣️", "🃏", "🀄", "🎴", "🎭", "🖼️", "🎨", "🧵", "🪡", "🧶", "🪢", "👑", "💍", "💄", "👜", "👛", "🎒", "👓", "🕶️"],
+  recent: [Folder, FolderOpen, File, FileText, Settings, User, Heart, Star, Home, Building, Camera, Globe],
+  files: [Image, Video, Music, Archive, Download, Upload, Copy, Clipboard],
+  navigation: [ArrowUp, ArrowDown, ArrowLeft, ArrowRight, MapPin, ExternalLink, Link, RefreshCw, RotateCcw, RotateCw],
+  interface: [Users, Bell, Lock, Key, Shield, Eye, EyeOff, Edit, Trash2, Plus, Minus],
+  communication: [Phone, Mail, MessageCircle, Send, Share, Wifi, Battery, Calendar, Clock, Info, HelpCircle],
+  actions: [Check, XIcon, Play, Pause, Square, Volume2, VolumeX, Maximize, Minimize, ThumbsUp, ThumbsDown, Flag],
+  emotions: [SmileIcon, Frown, Meh, Gift, Coffee, Sun],
+  business: [CreditCard, ShoppingCart, Bookmark, Tag, Zap, AlertCircle, CheckCircle, XCircle, Scissors, Search],
 };
 
 export default function EmojiPicker({ isOpen, onClose, onEmojiSelect, currentEmoji }: EmojiPickerProps) {
   const [activeTab, setActiveTab] = useState<TabType>("emojis");
-  const [selectedCategory, setSelectedCategory] = useState<string>("recent");
   const [searchQuery, setSearchQuery] = useState("");
-  const [hoveredEmoji, setHoveredEmoji] = useState<string | null>(null);
 
   // Reset state when dialog opens
   useEffect(() => {
     if (isOpen) {
       setSearchQuery("");
       setActiveTab("emojis");
-      setSelectedCategory("recent");
     }
   }, [isOpen]);
 
@@ -59,16 +143,32 @@ export default function EmojiPicker({ isOpen, onClose, onEmojiSelect, currentEmo
     onClose();
   };
 
+  const handleIconClick = (IconComponent: React.ComponentType) => {
+    // For icons, we'll use the component name as the emoji value
+    const iconName = IconComponent.displayName || IconComponent.name || "📁";
+    onEmojiSelect(iconName);
+    onClose();
+  };
+
   // Get current categories based on active tab
   const currentCategories = activeTab === "emojis" ? EMOJI_CATEGORIES : ICON_CATEGORIES;
 
+  // Get all items from all categories (no category filtering)
+  const allItems = Object.values(currentCategories).flat();
+
   // Filter items based on search
   const filteredItems = searchQuery
-    ? Object.values(currentCategories).flat().filter(item =>
-        item.includes(searchQuery)
-        // Could add item names/descriptions here for better search
-      )
-    : currentCategories[selectedCategory as keyof typeof currentCategories] || [];
+    ? allItems.filter(item => {
+        if (activeTab === "emojis") {
+          // For emojis, filter by the emoji string itself
+          return (item as string).includes(searchQuery);
+        } else {
+          // For icons, filter by component name
+          const iconName = (item as React.ComponentType).displayName || (item as React.ComponentType).name || "";
+          return iconName.toLowerCase().includes(searchQuery.toLowerCase());
+        }
+      })
+    : allItems;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -93,10 +193,7 @@ export default function EmojiPicker({ isOpen, onClose, onEmojiSelect, currentEmo
           {/* Tab Bar */}
           <div className="flex bg-background-input rounded-lg p-1">
             <button
-              onClick={() => {
-                setActiveTab("emojis");
-                setSelectedCategory("recent");
-              }}
+              onClick={() => setActiveTab("emojis")}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 activeTab === "emojis"
                   ? "bg-accent-blue text-white shadow-sm"
@@ -107,10 +204,7 @@ export default function EmojiPicker({ isOpen, onClose, onEmojiSelect, currentEmo
               Emojis
             </button>
             <button
-              onClick={() => {
-                setActiveTab("icons");
-                setSelectedCategory("recent");
-              }}
+              onClick={() => setActiveTab("icons")}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                 activeTab === "icons"
                   ? "bg-accent-blue text-white shadow-sm"
@@ -134,49 +228,51 @@ export default function EmojiPicker({ isOpen, onClose, onEmojiSelect, currentEmo
             />
           </div>
 
-          {!searchQuery && (
-            <>
-              {/* Category Tabs */}
-              <div className="flex flex-wrap gap-1">
-                {Object.entries(currentCategories).map(([category, items]) => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "ghost"}
-                    size="sm"
-                    className="text-xs capitalize flex items-center gap-1.5 px-3 py-1.5"
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    <span className="text-sm">{items[0]}</span>
-                    {category}
-                    <span className="text-xs opacity-60">({items.length})</span>
-                  </Button>
-                ))}
-              </div>
-            </>
-          )}
+
 
           {/* Items Grid */}
           <div className="flex-1 min-h-0">
             <div className="grid grid-cols-6 gap-2 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-background-hover scrollbar-track-transparent">
-              {filteredItems.map((item, index) => (
-                <Button
-                  key={`${item}-${index}`}
-                  variant="ghost"
-                  className={`h-12 w-12 text-2xl p-0 hover:bg-background-hover transition-all duration-150 rounded-lg ${
-                    currentEmoji === item
-                      ? "bg-accent-blue/20 border-2 border-accent-blue ring-2 ring-accent-blue/30"
-                      : hoveredEmoji === item
-                      ? "bg-background-hover/80"
-                      : ""
-                  }`}
-                  onClick={() => handleEmojiClick(item)}
-                  onMouseEnter={() => setHoveredEmoji(item)}
-                  onMouseLeave={() => setHoveredEmoji(null)}
-                  title={`Select ${item}`}
-                >
-                  {item}
-                </Button>
-              ))}
+              {filteredItems.map((item, index) => {
+                if (activeTab === "emojis") {
+                  // Render emoji
+                  const emoji = item as string;
+                  return (
+                    <Button
+                      key={`${emoji}-${index}`}
+                      variant="ghost"
+                      className={`h-12 w-12 text-2xl p-0 hover:bg-background-hover transition-all duration-150 rounded-lg ${
+                        currentEmoji === emoji
+                          ? "bg-accent-blue/20 border-2 border-accent-blue ring-2 ring-accent-blue/30"
+                          : ""
+                      }`}
+                      onClick={() => handleEmojiClick(emoji)}
+                      title={`Select ${emoji}`}
+                    >
+                      {emoji}
+                    </Button>
+                  );
+                } else {
+                  // Render icon
+                  const IconComponent = item as React.ComponentType<{ className?: string }>;
+                  const iconName = IconComponent.displayName || IconComponent.name || "Icon";
+                  return (
+                    <Button
+                      key={`${iconName}-${index}`}
+                      variant="ghost"
+                      className={`h-12 w-12 p-0 hover:bg-background-hover transition-all duration-150 rounded-lg ${
+                        currentEmoji === iconName
+                          ? "bg-accent-blue/20 border-2 border-accent-blue ring-2 ring-accent-blue/30"
+                          : ""
+                      }`}
+                      onClick={() => handleIconClick(IconComponent)}
+                      title={`Select ${iconName}`}
+                    >
+                      <IconComponent className="h-6 w-6 text-text-primary" />
+                    </Button>
+                  );
+                }
+              })}
             </div>
 
             {searchQuery && filteredItems.length === 0 && (
@@ -187,29 +283,7 @@ export default function EmojiPicker({ isOpen, onClose, onEmojiSelect, currentEmo
             )}
           </div>
 
-          {/* Current Selection & Preview */}
-          <div className="flex-shrink-0 border-t border-border pt-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-text-secondary">Current:</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-3xl">{currentEmoji || "📁"}</span>
-                  <span className="text-sm text-text-muted">→</span>
-                  <span className="text-3xl">{hoveredEmoji || currentEmoji || "📁"}</span>
-                </div>
-              </div>
 
-              {hoveredEmoji && hoveredEmoji !== currentEmoji && (
-                <Button
-                  onClick={() => handleEmojiClick(hoveredEmoji)}
-                  size="sm"
-                  className="bg-accent-blue hover:bg-accent-blue/80"
-                >
-                  Select {hoveredEmoji}
-                </Button>
-              )}
-            </div>
-          </div>
         </div>
       </DialogContent>
     </Dialog>

@@ -16,7 +16,79 @@ import {
   Folder,
   Edit,
   Trash2,
-  ChevronLeft
+  ChevronLeft,
+  FolderOpen,
+  File,
+  Image,
+  Video,
+  Music,
+  Archive,
+  Download,
+  Upload,
+  Settings,
+  Users,
+  Heart,
+  Star,
+  Home,
+  Building,
+  Camera,
+  Phone,
+  Mail,
+  Calendar,
+  Clock,
+  MapPin,
+  Globe,
+  Wifi,
+  Battery,
+  Zap,
+  Sun,
+  Coffee,
+  Gift,
+  ShoppingCart,
+  CreditCard,
+  Bookmark,
+  Tag,
+  Flag,
+  Bell,
+  Lock,
+  Key,
+  Shield,
+  Eye,
+  EyeOff,
+  Minus,
+  Check,
+  X as XIcon,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  RotateCcw,
+  RotateCw,
+  RefreshCw,
+  Play,
+  Pause,
+  Square,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
+  Copy,
+  Scissors,
+  Clipboard,
+  ExternalLink,
+  Info,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  HelpCircle,
+  MessageCircle,
+  Send,
+  Share,
+  ThumbsUp,
+  ThumbsDown,
+  Smile as SmileIcon,
+  Frown,
+  Meh
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,11 +99,107 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SearchCommand } from "./SearchCommand";
 import { useState } from "react";
-import { createNewPage, createFolder, renameFolder, deleteFolder, updateFolder } from "@/db/draw";
+import { createNewPage, createFolder, deleteFolder, updateFolder } from "@/db/draw";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfileOverlay } from "@/contexts/ProfileOverlayContext";
+
+// Icon mapping for Lucide icons
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Folder,
+  FolderOpen,
+  File,
+  FileText,
+  Image,
+  Video,
+  Music,
+  Archive,
+  Download,
+  Upload,
+  Settings,
+  User,
+  Users,
+  Heart,
+  Star,
+  Home,
+  Building,
+  Camera,
+  Phone,
+  Mail,
+  Calendar,
+  Clock,
+  MapPin,
+  Globe,
+  Wifi,
+  Battery,
+  Zap,
+  Sun,
+  Coffee,
+  Gift,
+  ShoppingCart,
+  CreditCard,
+  Bookmark,
+  Tag,
+  Flag,
+  Bell,
+  Lock,
+  Key,
+  Shield,
+  Eye,
+  EyeOff,
+  Edit,
+  Plus,
+  Minus,
+  Check,
+  XIcon,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  RotateCcw,
+  RotateCw,
+  RefreshCw,
+  Play,
+  Pause,
+  Square,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Minimize,
+  Copy,
+  Scissors,
+  Clipboard,
+  ExternalLink,
+  Info,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  HelpCircle,
+  MessageCircle,
+  Send,
+  Share,
+  ThumbsUp,
+  ThumbsDown,
+  SmileIcon,
+  Frown,
+  Meh,
+  Search,
+};
+
+// Helper function to render either emoji or icon
+const renderIcon = (iconValue: string | undefined) => {
+  if (!iconValue) return "📁";
+
+  // Check if it's a Lucide icon name
+  const IconComponent = ICON_MAP[iconValue];
+  if (IconComponent) {
+    return <IconComponent className="h-4 w-4 text-text-primary" />;
+  }
+
+  // Otherwise, it's an emoji
+  return iconValue;
+};
 
 interface SidebarProps {
   className?: string;
@@ -172,7 +340,7 @@ function FolderPagesSection({
           onClick={onBackToDashboard}
         >
           <ChevronLeft className="h-4 w-4 flex-shrink-0" />
-          <span className="text-base flex-shrink-0">{folderIcon || "📁"}</span>
+          <span className="text-base flex-shrink-0">{renderIcon(folderIcon)}</span>
           <span className="font-medium text-sm truncate">{folderName}</span>
         </button>
         <div className="flex items-center gap-1 flex-shrink-0 ml-2">
@@ -256,7 +424,7 @@ function FolderItem({
       )}
     >
       {/* Folder Icon */}
-      <span className="text-base flex-shrink-0">{folder.icon || "📁"}</span>
+      <span className="text-base flex-shrink-0">{renderIcon(folder.icon)}</span>
 
       {/* Folder Name */}
       <div className="flex-1 min-w-0">
