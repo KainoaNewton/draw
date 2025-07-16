@@ -44,6 +44,7 @@ export default function Page({ id }: PageProps) {
       setIsSaving(false);
       // Invalidate the pages cache to update the sidebar
       queryClient.invalidateQueries({ queryKey: ["pages"] });
+      queryClient.invalidateQueries({ queryKey: ["folderPages"] });
       // REMOVED: queryClient.invalidateQueries({ queryKey: ["page", id] });
       // This was causing data loss by immediately refetching and overwriting user changes
     },
