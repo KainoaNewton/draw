@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback, useRef } from "react";
 
 import Loader from "@/components/Loader";
 import { useTheme } from "@/components/theme-provider";
-import { Button } from "@/components/ui/button";
 import { Wifi, WifiOff, RotateCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";

@@ -45,7 +45,7 @@ type OfflineStore = {
   pendingChanges: PendingChange[];
   isSyncing: boolean;
   lastSyncAttempt: string | null;
-  addPendingChange: (change: Omit<PendingChange, 'id' | 'timestamp'>) => void;
+  addPendingChange: (change: Omit<PendingPageChange, 'id' | 'timestamp'> | Omit<PendingFolderChange, 'id' | 'timestamp'> | Omit<PendingPageCreate, 'id' | 'timestamp'> | Omit<PendingFolderCreate, 'id' | 'timestamp'>) => void;
   removePendingChange: (id: string) => void;
   clearPendingChanges: () => void;
   setSyncing: (syncing: boolean) => void;
@@ -64,19 +64,19 @@ const offlineStore = create<OfflineStore>()(
       addPendingChange: (change) => {
         const id = `${change.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const timestamp = new Date().toISOString();
-        
+
         set((state) => {
           // Remove any existing pending change for the same item to avoid duplicates
           const filteredChanges = state.pendingChanges.filter(existing => {
             if (change.type === 'page_update' && existing.type === 'page_update') {
-              return (existing as PendingPageChange).page_id !== (change as any).page_id;
+              return (existing as PendingPageChange).page_id !== (change as PendingPageChange).page_id;
             }
             if (change.type === 'folder_rename' && existing.type === 'folder_rename') {
-              return (existing as PendingFolderChange).folder_id !== (change as any).folder_id;
+              return (existing as PendingFolderChange).folder_id !== (change as PendingFolderChange).folder_id;
             }
             return true;
           });
-          
+
           return {
             pendingChanges: [...filteredChanges, { ...change, id, timestamp } as PendingChange],
           };

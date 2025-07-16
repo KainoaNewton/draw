@@ -7,11 +7,10 @@ import { useAuth } from './useAuth';
 export function useOfflineSync() {
   const { isOnline, justCameOnline } = useNetworkStatus();
   const { isAuthenticated } = useAuth();
-  const { 
-    pendingChanges, 
-    isSyncing, 
-    hasPendingChanges, 
-    getPendingChangesCount 
+  const {
+    isSyncing,
+    hasPendingChanges,
+    getPendingChangesCount
   } = offlineStore();
 
   // Sync when coming back online
