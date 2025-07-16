@@ -14,7 +14,7 @@ import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
 import { NonDeletedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { RefreshCcw, Star } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import { getDrawData, setDrawData } from "@/db/draw";
 import { drawDataStore } from "@/stores/drawDataStore";
 
@@ -27,7 +27,6 @@ export default function Page({ id }: PageProps) {
     useState<ExcalidrawImperativeAPI | null>(null);
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [customButtonPosition, setCustomButtonPosition] = useState({ left: '60px', top: '16px' });
   const { theme } = useTheme();
   const queryClient = useQueryClient();
 
@@ -127,25 +126,6 @@ export default function Page({ id }: PageProps) {
     }
   }, [id, excalidrawAPI, theme]);
 
-  useEffect(() => {
-    // Set a fixed position for our custom button since we're shifting the hamburger menu with CSS
-    const adjustButtonPosition = () => {
-      // Since we're shifting the hamburger menu 48px to the right with CSS,
-      // we can position our button at a fixed location that will be to its left
-      setCustomButtonPosition({
-        left: '16px', // Fixed position at left edge
-        top: '16px'
-      });
-    };
-
-    // Set position after Excalidraw loads
-    const timer = setTimeout(adjustButtonPosition, 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [excalidrawAPI]);
-
   return (
     <div className="flex w-full flex-col">
       <div className="h-full w-full excalidraw-container">
@@ -154,49 +134,7 @@ export default function Page({ id }: PageProps) {
         ) : (
           <>
             {/* Custom button positioned absolutely within the Excalidraw container */}
-            <div
-              className="custom-excalidraw-button absolute"
-              style={{
-                position: 'absolute',
-                left: customButtonPosition.left,
-                top: customButtonPosition.top,
-                zIndex: 1000
-              }}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        // Placeholder functionality - replace with your custom action
-                        console.log("Custom button clicked!");
-                        toast("Custom button clicked! Add your functionality here.");
-                      }}
-                      className="h-9 w-9 p-0 border-0 shadow-sm transition-colors rounded-lg"
-                      style={{
-                        height: '36px',
-                        width: '36px',
-                        backgroundColor: '#23232A',
-                        borderRadius: '8px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#363541';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#23232A';
-                      }}
-                    >
-                      <Star className="h-4 w-4" style={{ color: '#E3E3E8' }} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Custom Button - Add your functionality here</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            {/* Removed custom star button */}
 
             <div className="excalidraw h-full w-full">
               <Excalidraw
