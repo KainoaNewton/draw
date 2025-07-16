@@ -41,11 +41,15 @@ export default function Page({ id }: PageProps) {
       elements: NonDeletedExcalidrawElement[];
       name: string;
     }) => setDrawData(id, data.elements, data.name),
-    onSuccess: () => {
+    onSuccess: (data) => {
       setIsSaving(false);
       // Invalidate the pages cache to update the sidebar
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["folderPages"] });
+      // Invalidate the specific folderPages query for this page's folder
+      if (data?.data && data.data[0]?.folder_id && data.data[0]?.user_id) {
+        queryClient.invalidateQueries({ queryKey: ["folderPages", data.data[0].user_id, data.data[0].folder_id] });
+      }
       // REMOVED: queryClient.invalidateQueries({ queryKey: ["page", id] });
       // This was causing data loss by immediately refetching and overwriting user changes
     },
