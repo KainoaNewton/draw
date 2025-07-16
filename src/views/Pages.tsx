@@ -346,7 +346,7 @@ export default function Pages() {
             >
               <CardContent className="p-4">
                 <CardTitle className="text-lg font-semibold text-text-primary mb-2 truncate">
-                  {page.name}
+                  {page.name || "Untitled"}
                 </CardTitle>
                 <p className="text-sm text-text-muted">
                   {dayjs(page.updated_at).fromNow()}
