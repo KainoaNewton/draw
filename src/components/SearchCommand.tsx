@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { usePages } from "@/hooks/usePages";
 import { useFolders } from "@/hooks/useFolders";
 import { useFolderContext } from "@/contexts/FolderContext";
-import { Search, FileText, Folder, Clock, Hash, Plus, User, FolderPlus, PlusCircle } from "lucide-react";
+import { Search, FileText, Folder, Clock, Hash, User, FolderPlus, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -89,7 +89,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
         return;
       }
 
-      const response = await createNewPage(user.id, targetFolderId);
+      const response = await createNewPage(undefined, targetFolderId);
       if (response.error) {
         toast.error("Failed to create page");
         return;
