@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -29,6 +29,7 @@ export default function Page({ id }: PageProps) {
   const [isSaving, setIsSaving] = useState(false);
   const { theme } = useTheme();
   const queryClient = useQueryClient();
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["page", id],
@@ -152,6 +153,21 @@ export default function Page({ id }: PageProps) {
     }
   }, [id, excalidrawAPI, theme]);
 
+  // Debounced auto-save for name changes
+  useEffect(() => {
+    if (!excalidrawAPI) return;
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    debounceTimeout.current = setTimeout(() => {
+      const scene = excalidrawAPI.getSceneElements();
+      setIsSaving(true);
+      drawDataStore.getState().setPageData(id, scene, new Date().toISOString(), name);
+      mutate({ elements: scene as NonDeletedExcalidrawElement[], name });
+    }, 400); // 400ms debounce
+    return () => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    };
+  }, [name, excalidrawAPI]);
+
   return (
     <div className="flex w-full flex-col">
       <div className="h-full w-full excalidraw-container">
@@ -181,29 +197,7 @@ export default function Page({ id }: PageProps) {
                       }}
                       placeholder="Page Title"
                     />
-                    <Button
-                      variant="ghost"
-                      onClick={setSceneData}
-                      disabled={isSaving}
-                      size="sm"
-                      className="border-0 shadow-sm transition-colors rounded-lg px-4"
-                      style={{
-                        backgroundColor: '#23232A',
-                        borderRadius: '8px',
-                        color: '#E3E3E8',
-                        height: '36px'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isSaving) {
-                          e.currentTarget.style.backgroundColor = '#363541';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#23232A';
-                      }}
-                    >
-                      {isSaving ? "Saving..." : "Save"}
-                    </Button>
+                    {/* Removed Save button for name, now auto-saves */}
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
