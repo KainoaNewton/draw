@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SearchCommand } from "./SearchCommand";
 import { useState } from "react";
-import { createNewPage, createFolder, renameFolder, deleteFolder } from "@/db/draw";
+import { createNewPage, createFolder, renameFolder, deleteFolder, updateFolder } from "@/db/draw";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -153,11 +153,13 @@ function FoldersSection({
 
 function FolderPagesSection({
   folderName,
+  folderIcon,
   children,
   onCreatePage,
   onBackToDashboard
 }: {
   folderName: string;
+  folderIcon?: string;
   children: React.ReactNode;
   onCreatePage: () => void;
   onBackToDashboard: () => void;
@@ -170,7 +172,7 @@ function FolderPagesSection({
           onClick={onBackToDashboard}
         >
           <ChevronLeft className="h-4 w-4 flex-shrink-0" />
-          <Folder className="h-4 w-4 flex-shrink-0" />
+          <span className="text-base flex-shrink-0">{folderIcon || "📁"}</span>
           <span className="font-medium text-sm truncate">{folderName}</span>
         </button>
         <div className="flex items-center gap-1 flex-shrink-0 ml-2">
@@ -254,7 +256,7 @@ function FolderItem({
       )}
     >
       {/* Folder Icon */}
-      <Folder className="h-4 w-4 flex-shrink-0 text-yellow-500" />
+      <span className="text-base flex-shrink-0">{folder.icon || "📁"}</span>
 
       {/* Folder Name */}
       <div className="flex-1 min-w-0">
@@ -468,7 +470,7 @@ export default function Sidebar({ className }: SidebarProps) {
 
   // Handle folder rename
   async function handleRenameFolder(folderId: string, newName: string) {
-    const data = await renameFolder(folderId, newName);
+    const data = await updateFolder(folderId, { name: newName });
     if (data.data) {
       queryClient.invalidateQueries({ queryKey: ["folders"] });
       toast("Successfully renamed folder!");
@@ -619,6 +621,7 @@ export default function Sidebar({ className }: SidebarProps) {
           /* Folder Pages Section for Individual Page View - Show pages in current folder */
           <FolderPagesSection
             folderName={currentFolder?.name ?? "Unknown Folder"}
+            folderIcon={currentFolder?.icon}
             onCreatePage={handleCreatePageInFolder}
             onBackToDashboard={handleBackToDashboard}
           >

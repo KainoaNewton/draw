@@ -14,6 +14,7 @@ export const FOLDERS_DB_NAME = "folders";
 export type Folder = {
   folder_id: string;
   name: string;
+  icon: string;
   created_at: string;
   updated_at: string;
   user_id: string;
@@ -112,7 +113,7 @@ export async function renamePage(page_id: string, newName: string): Promise<DBRe
 export async function getFolders(user_id: string): Promise<DBResponse> {
   const { data, error } = await supabase
     .from(FOLDERS_DB_NAME)
-    .select()
+    .select("folder_id, name, icon, created_at, updated_at, user_id")
     .order("created_at", { ascending: true })
     .eq("user_id", user_id);
 
@@ -125,7 +126,7 @@ export async function createFolder(name: string): Promise<DBResponse> {
     const { data, error } = await supabase
       .from(FOLDERS_DB_NAME)
       .insert({ user_id: profile.user?.id, name })
-      .select();
+      .select("folder_id, name, icon, created_at, updated_at, user_id");
     return { data, error };
   }
   return { data: null, error: profileError };
@@ -158,7 +159,17 @@ export async function createDefaultFolder(user_id: string): Promise<DBResponse> 
   const { data, error } = await supabase
     .from(FOLDERS_DB_NAME)
     .insert({ user_id, name: "My Drawings" })
-    .select();
+    .select("folder_id, name, icon, created_at, updated_at, user_id");
+
+  return { data, error };
+}
+
+export async function updateFolder(folder_id: string, updates: { name?: string; icon?: string }): Promise<DBResponse> {
+  const { data, error } = await supabase
+    .from(FOLDERS_DB_NAME)
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq("folder_id", folder_id)
+    .select("folder_id, name, icon, created_at, updated_at, user_id");
 
   return { data, error };
 }
