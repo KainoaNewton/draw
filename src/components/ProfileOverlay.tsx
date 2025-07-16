@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { getUser, updateUser } from "@/db/auth";
+import { getUser, updateUser, logout } from "@/db/auth";
 import { Input } from "@/components/ui/input";
 import { useProfileOverlay } from "@/contexts/ProfileOverlayContext";
 
@@ -42,14 +42,18 @@ import {
   Edit3,
   Check,
   X,
-  ChevronLeft
+  ChevronLeft,
+  LogOut
 } from "lucide-react";
 import dayjs from "dayjs";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function ProfileOverlay() {
   const { isProfileOpen, closeProfile } = useProfileOverlay();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
     queryKey: ["user"],
@@ -108,6 +112,22 @@ export default function ProfileOverlay() {
       name: userName,
       email: userEmail,
     });
+  }
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    const data = await logout();
+
+    if (data.error) {
+      setIsLoggingOut(false);
+      toast.error("An error occurred", { description: data.error.message });
+      return;
+    }
+
+    setIsLoggingOut(false);
+    closeProfile();
+    toast.success("Logged out successfully!");
+    navigate({ to: "/" });
   }
 
   return (
@@ -310,6 +330,21 @@ export default function ProfileOverlay() {
                   </CardHeader>
                   <CardContent>
                     <GoogleAccountConnection />
+                  </CardContent>
+                </Card>
+
+                {/* Sign Out */}
+                <Card>
+                  <CardContent className="pt-6">
+                    <Button
+                      variant="destructive"
+                      onClick={handleLogout}
+                      disabled={isLoggingOut}
+                      className="w-full flex items-center gap-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      {isLoggingOut ? 'Signing out...' : 'Sign Out'}
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
