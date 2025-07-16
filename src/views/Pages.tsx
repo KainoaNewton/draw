@@ -19,7 +19,7 @@ function NewPageOptionDropdown({
 }) {
   return (
     <Button variant="default" className="font-medium text-sm" onClick={createPageFn}>
-      + New Page
+      + New drawing
     </Button>
   );
 }
