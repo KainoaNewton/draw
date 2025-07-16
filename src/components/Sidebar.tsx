@@ -153,11 +153,13 @@ function FoldersSection({
 
 function FolderPagesSection({
   folderName,
+  folderIcon,
   children,
   onCreatePage,
   onBackToDashboard
 }: {
   folderName: string;
+  folderIcon?: string;
   children: React.ReactNode;
   onCreatePage: () => void;
   onBackToDashboard: () => void;
@@ -170,7 +172,11 @@ function FolderPagesSection({
           onClick={onBackToDashboard}
         >
           <ChevronLeft className="h-4 w-4 flex-shrink-0" />
-          <Folder className="h-4 w-4 flex-shrink-0" />
+          {folderIcon ? (
+            <span className="text-sm flex-shrink-0">{folderIcon}</span>
+          ) : (
+            <Folder className="h-4 w-4 flex-shrink-0" />
+          )}
           <span className="font-medium text-sm truncate">{folderName}</span>
         </button>
         <div className="flex items-center gap-1 flex-shrink-0 ml-2">
@@ -254,7 +260,11 @@ function FolderItem({
       )}
     >
       {/* Folder Icon */}
-      <Folder className="h-4 w-4 flex-shrink-0 text-yellow-500" />
+      {folder.icon ? (
+        <span className="text-lg flex-shrink-0">{folder.icon}</span>
+      ) : (
+        <Folder className="h-4 w-4 flex-shrink-0 text-yellow-500" />
+      )}
 
       {/* Folder Name */}
       <div className="flex-1 min-w-0">
@@ -421,9 +431,15 @@ export default function Sidebar({ className }: SidebarProps) {
     currentPage?.folder_id || null
   );
 
-  // Determine if we're on pages view or individual page view
+  // Determine if we're on pages view, folder view, or individual page view
   const isOnPagesView = location.pathname === "/pages";
+  const isOnFolderView = location.pathname.startsWith('/pages/');
   const isOnIndividualPage = location.pathname.startsWith('/page/');
+
+  // Extract folder ID from folder view route
+  const currentFolderIdFromRoute = isOnFolderView
+    ? location.pathname.split('/pages/')[1]
+    : null;
 
   // Handle folder creation
   async function handleCreateFolder() {
@@ -586,7 +602,7 @@ export default function Sidebar({ className }: SidebarProps) {
 
 
         {/* Conditional Content Based on Route */}
-        {isOnPagesView ? (
+        {isOnPagesView || isOnFolderView ? (
           /* Folders Section for Pages View - Show folders only, no individual pages */
           <FoldersSection
             onCreateFolder={handleCreateFolder}
@@ -604,8 +620,11 @@ export default function Sidebar({ className }: SidebarProps) {
                   key={folder.folder_id}
                   folder={folder}
                   pageCount={pageCounts[folder.folder_id] || 0}
-                  isSelected={selectedFolderId === folder.folder_id}
-                  onSelect={() => setSelectedFolderId(folder.folder_id)}
+                  isSelected={selectedFolderId === folder.folder_id || currentFolderIdFromRoute === folder.folder_id}
+                  onSelect={() => {
+                    setSelectedFolderId(folder.folder_id);
+                    navigate({ to: "/pages/$folderId", params: { folderId: folder.folder_id } });
+                  }}
                   onRename={handleRenameFolder}
                   onCreateDrawing={handleCreateDrawingInFolder}
                   onDelete={handleDeleteFolder}
@@ -619,6 +638,7 @@ export default function Sidebar({ className }: SidebarProps) {
           /* Folder Pages Section for Individual Page View - Show pages in current folder */
           <FolderPagesSection
             folderName={currentFolder?.name ?? "Unknown Folder"}
+            folderIcon={currentFolder?.icon}
             onCreatePage={handleCreatePageInFolder}
             onBackToDashboard={handleBackToDashboard}
           >

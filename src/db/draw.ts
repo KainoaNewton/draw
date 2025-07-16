@@ -17,6 +17,7 @@ export type Folder = {
   created_at: string;
   updated_at: string;
   user_id: string;
+  icon: string;
 };
 
 export async function getPages(user_id: string): Promise<DBResponse> {
@@ -123,7 +124,7 @@ export async function createFolder(name: string): Promise<DBResponse> {
   if (profile) {
     const { data, error } = await supabase
       .from(FOLDERS_DB_NAME)
-      .insert({ user_id: profile.user?.id, name })
+      .insert({ user_id: profile.user?.id, name, icon: "📁" })
       .select();
     return { data, error };
   }
@@ -156,7 +157,7 @@ export async function getDefaultFolder(user_id: string): Promise<DBResponse> {
 export async function createDefaultFolder(user_id: string): Promise<DBResponse> {
   const { data, error } = await supabase
     .from(FOLDERS_DB_NAME)
-    .insert({ user_id, name: "My Drawings" })
+    .insert({ user_id, name: "My Drawings", icon: "📁" })
     .select();
 
   return { data, error };
@@ -166,6 +167,16 @@ export async function renameFolder(folder_id: string, newName: string): Promise<
   const { data, error } = await supabase
     .from(FOLDERS_DB_NAME)
     .update({ name: newName, updated_at: new Date().toISOString() })
+    .eq("folder_id", folder_id)
+    .select();
+
+  return { data, error };
+}
+
+export async function updateFolderIcon(folder_id: string, icon: string): Promise<DBResponse> {
+  const { data, error } = await supabase
+    .from(FOLDERS_DB_NAME)
+    .update({ icon, updated_at: new Date().toISOString() })
     .eq("folder_id", folder_id)
     .select();
 

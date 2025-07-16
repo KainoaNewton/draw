@@ -19,6 +19,9 @@ const LoginLazyRouteImport = createFileRoute('/login')()
 const AuthenticatedPagesLazyRouteImport = createFileRoute(
   '/_authenticated/pages',
 )()
+const AuthenticatedPagesFolderIdLazyRouteImport = createFileRoute(
+  '/_authenticated/pages/$folderId',
+)()
 const AuthenticatedPageIdLazyRouteImport = createFileRoute(
   '/_authenticated/page/$id',
 )()
@@ -49,6 +52,14 @@ const AuthenticatedPagesLazyRoute = AuthenticatedPagesLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_authenticated/pages.lazy').then((d) => d.Route),
 )
+const AuthenticatedPagesFolderIdLazyRoute =
+  AuthenticatedPagesFolderIdLazyRouteImport.update({
+    id: '/$folderId',
+    path: '/$folderId',
+    getParentRoute: () => AuthenticatedPagesLazyRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/pages.$folderId.lazy').then((d) => d.Route),
+  )
 const AuthenticatedPageIdLazyRoute = AuthenticatedPageIdLazyRouteImport.update({
   id: '/page/$id',
   path: '/page/$id',
@@ -61,15 +72,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginLazyRoute
   '/signup': typeof SignupLazyRoute
-  '/pages': typeof AuthenticatedPagesLazyRoute
+  '/pages': typeof AuthenticatedPagesLazyRouteWithChildren
   '/page/$id': typeof AuthenticatedPageIdLazyRoute
+  '/pages/$folderId': typeof AuthenticatedPagesFolderIdLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginLazyRoute
   '/signup': typeof SignupLazyRoute
-  '/pages': typeof AuthenticatedPagesLazyRoute
+  '/pages': typeof AuthenticatedPagesLazyRouteWithChildren
   '/page/$id': typeof AuthenticatedPageIdLazyRoute
+  '/pages/$folderId': typeof AuthenticatedPagesFolderIdLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,14 +90,21 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginLazyRoute
   '/signup': typeof SignupLazyRoute
-  '/_authenticated/pages': typeof AuthenticatedPagesLazyRoute
+  '/_authenticated/pages': typeof AuthenticatedPagesLazyRouteWithChildren
   '/_authenticated/page/$id': typeof AuthenticatedPageIdLazyRoute
+  '/_authenticated/pages/$folderId': typeof AuthenticatedPagesFolderIdLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/pages' | '/page/$id'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/pages'
+    | '/page/$id'
+    | '/pages/$folderId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/pages' | '/page/$id'
+  to: '/' | '/login' | '/signup' | '/pages' | '/page/$id' | '/pages/$folderId'
   id:
     | '__root__'
     | '/'
@@ -93,6 +113,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/pages'
     | '/_authenticated/page/$id'
+    | '/_authenticated/pages/$folderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -139,6 +160,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPagesLazyRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/pages/$folderId': {
+      id: '/_authenticated/pages/$folderId'
+      path: '/$folderId'
+      fullPath: '/pages/$folderId'
+      preLoaderRoute: typeof AuthenticatedPagesFolderIdLazyRouteImport
+      parentRoute: typeof AuthenticatedPagesLazyRoute
+    }
     '/_authenticated/page/$id': {
       id: '/_authenticated/page/$id'
       path: '/page/$id'
@@ -149,13 +177,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedPagesLazyRouteChildren {
+  AuthenticatedPagesFolderIdLazyRoute: typeof AuthenticatedPagesFolderIdLazyRoute
+}
+
+const AuthenticatedPagesLazyRouteChildren: AuthenticatedPagesLazyRouteChildren =
+  {
+    AuthenticatedPagesFolderIdLazyRoute: AuthenticatedPagesFolderIdLazyRoute,
+  }
+
+const AuthenticatedPagesLazyRouteWithChildren =
+  AuthenticatedPagesLazyRoute._addFileChildren(
+    AuthenticatedPagesLazyRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
-  AuthenticatedPagesLazyRoute: typeof AuthenticatedPagesLazyRoute
+  AuthenticatedPagesLazyRoute: typeof AuthenticatedPagesLazyRouteWithChildren
   AuthenticatedPageIdLazyRoute: typeof AuthenticatedPageIdLazyRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedPagesLazyRoute: AuthenticatedPagesLazyRoute,
+  AuthenticatedPagesLazyRoute: AuthenticatedPagesLazyRouteWithChildren,
   AuthenticatedPageIdLazyRoute: AuthenticatedPageIdLazyRoute,
 }
 
