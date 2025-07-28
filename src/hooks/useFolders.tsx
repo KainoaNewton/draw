@@ -1,6 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getFolders, getPagesByFolder, Folder, getPages } from "@/db/draw";
 import { useAuth } from "./useAuth";
+import { useEffect } from "react";
+import { supabase } from "@/db/supabase";
 
 export function useFolders() {
   const { user } = useAuth();
@@ -58,6 +60,7 @@ export function useFolderPages(folderId: string | null) {
 
 export function useFolderPageCounts() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const {
     data: pageCounts,
@@ -82,6 +85,27 @@ export function useFolderPageCounts() {
     },
     enabled: !!user?.id,
   });
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const subscription = supabase
+      .channel("folder-page-counts")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "draw" },
+        () => {
+          queryClient.invalidateQueries({
+            queryKey: ["folderPageCounts", user?.id],
+          });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [user?.id, queryClient]);
 
   return {
     pageCounts: pageCounts || {},

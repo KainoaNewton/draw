@@ -234,6 +234,7 @@ export default function Pages() {
       toast("Page deleted!");
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["folderPages"] });
+      queryClient.invalidateQueries({ queryKey: ["folderPageCounts"] });
     }
     if (data.error) {
       toast("An error occurred", {
